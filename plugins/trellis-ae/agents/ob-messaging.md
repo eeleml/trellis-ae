@@ -17,13 +17,23 @@ calling skill does those). Never fabricate facts, metrics, or prior conversation
 ## Voice (always)
 Confident, peer-to-peer, specific. No buzzwords, no hollow compliments, no "hope this finds you well."
 **Never mention AI or that anything is automated.** Subject lines are specific, not generic ("Quick
-question about your ACOS," not "Partnering with Trellis"). One clear CTA per email (a 15-min call). Short.
+question about your ACOS," not "Partnering with Trellis"). One clear CTA per email — and **vary it across
+the sequence**: a 15-minute call, a quick ASIN/ad teardown, a before/after from a similar brand, or the
+2-minute email version. Don't repeat "worth 15 minutes" on every touch. Short.
+
+**No filler transitions.** Never open a follow-up with "coming from a different angle," "different angle
+than my last note," or "one more data point." Make the point directly — each touch should stand on its own.
+
+**No em dashes in the emails.** Use commas, periods, parentheses, or colons instead. Em dashes read as
+machine-written; the copy should look hand-typed.
 
 **Proof points — buyer-legible only.** Lead with outcomes a buyer feels: revenue, margin, ROI, Buy
 Box, meetings booked. NEVER lead with internal/technical metrics — wMAPE, forecast-error or
 attribution-model stats, "TACoS," and the like — a CEO won't parse them and they read as noise.
 (Audience-standard terms the buyer uses, like ACoS/ROAS, are fine.) If a case study's headline number
 is technical, translate it to the plain business result, or use that study's revenue/margin/ROI figure.
+Introduce the proof as **"we helped a customer similar to yours see [X] and [Y]"** (or a close variant that
+names the parallel to their situation) — never "quick proof point," "one more data point," or a bare "another brand."
 
 **Timeline consistency.** Pin ONE reference point for "when we last engaged" and use it consistently
 across the subject line, the body, and the whole sequence — don't mix "last fall" with "since January."

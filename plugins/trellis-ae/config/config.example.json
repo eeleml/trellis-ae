@@ -1,15 +1,9 @@
 {
-  "_comment": "Copy this to ~/.trellis-ae/config.json and fill in real values. Do NOT commit the real file — it stays local, distributed out-of-band (like the Clay webhook). The skills read team constants from ~/.trellis-ae/config.json so the public repo holds no internal identifiers.",
-  "hubspot_portal_id": "REPLACE_WITH_PORTAL_ID",
-  "ae_owner_ids": {
-    "Your Name": "REPLACE_WITH_YOUR_HUBSPOT_OWNER_ID",
-    "Teammate Name": "REPLACE_WITH_THEIR_OWNER_ID"
-  },
-  "case_study_index": {
-    "type": "drive_folder | notion_page",
-    "pointer": "REPLACE_WITH_DRIVE_FOLDER_ID_OR_NOTION_URL",
-    "_note": "The messaging step reads verified case studies (customer / vertical / value prop / metric) live from here. Keep customer metrics OUT of this repo."
-  },
+  "_comment": "You normally don't edit this by hand — run /trellis-ae:setup and it writes ~/.trellis-ae/config.json for you (resolving your portal id + owner id at runtime). This file just shows the shape. Never commit the real ~/.trellis-ae/config.json.",
+  "hubspot_portal_id": "RESOLVED_BY_SETUP",
+  "ae_owner_id": "YOUR_HUBSPOT_OWNER_ID",
+  "ae_name": "Your Name",
   "outbound_signature": "Your Name\nTrellis",
-  "alerts_channel": "slack_channel_name_or_email_for_accountability_reports"
+  "case_study_index": { "type": "drive_file", "file_id": "SHARED_DRIVE_FILE_ID" },
+  "alerts_channel": "slack-channel-for-accountability-or-blank"
 }

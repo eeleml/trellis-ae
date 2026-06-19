@@ -24,6 +24,8 @@ and meetings, not writing email.
 /plugin marketplace add eeleml/trellis-ae
 /plugin install trellis-ae@trellis-ae
 ```
+Then **turn on auto-update** so you stay current automatically: `/plugin` → **Marketplaces** → select
+`trellis-ae` → toggle auto-update on. (Without this you'd have to update manually — see *Updating the team*.)
 
 ## One-time setup (per AE)
 1. **Install** (the two commands above).
@@ -50,8 +52,23 @@ webhook in `~/.clay-webhook`, Apollo key in env). Internal identifiers (owner id
 messaging time — never committed.
 
 ## Updating the team
-Edit the skill/agent, bump `version` in both `plugins/trellis-ae/.claude-plugin/plugin.json` and
-`.claude-plugin/marketplace.json`, commit, and push. Installers pick up the new version on next session.
+Edit the skill/agent, bump `version` in **both** `plugins/trellis-ae/.claude-plugin/plugin.json` and
+`.claude-plugin/marketplace.json` (the value in `plugin.json` wins, so keep them in sync), commit, and push.
+If you don't bump the `version` string, Claude Code keeps the cached copy and **ignores the new commits**.
+
+**Pushing does not auto-update installed AEs.** Third-party marketplaces don't auto-update by default, so
+each AE picks up a new version one of two ways:
+
+- **Auto-update (recommended, set once):** `/plugin` → **Marketplaces** → select `trellis-ae` → enable
+  auto-update. Claude Code then refreshes and updates at startup; the AE just runs `/reload-plugins` if prompted.
+- **Manual (each release):**
+  ```
+  /plugin marketplace update trellis-ae
+  /plugin update trellis-ae@trellis-ae
+  ```
+
+To check the installed version: `/plugin` → **Installed**. A Slack ping fires on every push to `main` via
+`.github/workflows/notify-slack.yml` (requires the `SLACK_WEBHOOK_URL` repo secret).
 
 ## Status
 Built: `setup`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability` + `contact-finder` + the

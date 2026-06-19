@@ -16,6 +16,7 @@ missing, tell them to enable it in Claude → Settings → Connectors — **you 
 - **Gmail** (required) — `list_labels` or `list_drafts`.
 - **Fathom** (required) — `get_identity` or `list_meetings`.
 - **Google Drive** (required, for case studies) — `list_recent_files`.
+- **Claude in Chrome** (required — to read the HubSpot list links the AE pastes) — `list_connected_browsers`.
 - **Slack** (only if they'll run `accountability` or want reply alerts) — `slack_search_channels`.
 If a required one is missing, gather what you can, tell them to connect it, and have them re-run setup.
 

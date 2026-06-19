@@ -18,7 +18,7 @@ never send.
   matching the ask, apply the eligibility filter, then follow RoE — **flag the existing owner**, but
   it's fair game as long as RoE is otherwise clear. Report owners so routing can be confirmed.
 
-Cap ~25 per run.
+When the list comes as a **HubSpot list link**, open it with **Claude in Chrome** (`navigate` + `get_page_text`, paging through) to read the members. **Count the actual contacts and report the number — never assume 25.** Process the whole list; for large lists (40+), confirm before a long run or offer to batch.
 
 ## Eligibility (who's in-bounds)
 - **≥ 3-month cool-off** since the deal closed lost — an RoE/ownership rule; don't re-poke a fresh

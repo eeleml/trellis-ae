@@ -28,7 +28,7 @@ and meetings, not writing email.
 ## One-time setup (per AE)
 1. **Install** (the two commands above).
 2. **Connect these connectors** in Claude → Settings → Connectors:
-   - **HubSpot · Gmail · Fathom · Google Drive** — all required.
+   - **HubSpot · Gmail · Fathom · Google Drive · Claude in Chrome** — all required (Chrome reads the HubSpot list links you paste).
    - **Slack** — only if you'll run `accountability` or want reply alerts.
 3. **Run `/trellis-ae:setup`** — it verifies your connectors, finds your HubSpot owner ID, saves your signature, has you paste the team **Clay webhook** (get it from your admin), locates the case-study index in Drive, and writes `~/.trellis-ae/config.json`.
 4. **Schedule** via `/schedule`: follow-ups at 6 AM weekdays (and `accountability` weekly if you run it).

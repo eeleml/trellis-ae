@@ -10,8 +10,13 @@ Email 1 per contact — so the AE spends their time reviewing and sending, not w
 anything; you draft. Keep the AE's time in chat minimal: do the work, then hand back a short summary.
 
 ## Input
-The AE pastes a list (up to ~25) — emails, or names + companies. If it's longer than 25, do the
-first 25 and tell them you'll take the rest in a second pass.
+The AE gives you the list one of two ways:
+- **A HubSpot list link** — open it with **Claude in Chrome** (`navigate` to the URL + `get_page_text`,
+  paging via the Next button) and read off the members. (HubSpot's URL list-id ≠ the search API id, so
+  reading the page is the reliable way.)
+- **Pasted contacts** — emails, or names + companies.
+**Always count the actual contacts and tell them the number — never assume 25.** Process the whole list;
+if it's large (40+), say so and confirm before a long run (or offer to batch it).
 
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (portal id, the AE's HubSpot owner id, case-study

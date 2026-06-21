@@ -13,7 +13,8 @@ and meetings, not writing email.
 | `/trellis-ae:closed-lost` | Re-engagement: deal-history + Fathom-first → Gmail draft; owner-aware, job-change & lost-reason driven |
 | `/trellis-ae:follow-ups` | Finds your sent Email 1's and drafts the next in-thread touch on cadence; skips anyone who replied |
 | `/trellis-ae:accountability` | Checks Email 1's are sent, follow-ups + calls are happening, replies handled → flags gaps per AE |
-| `/trellis-ae:local-visits` *(coming)* | Door-knock prep: text-message drafts + one lunch-invite email + talking points + visit task |
+| `/trellis-ae:reporting` | **Your morning briefing** — replies waiting, yesterday's emails/calls + outcomes, cadence health, what worked, and how many call tasks to line up today (read-only) |
+| `/trellis-ae:local-visits` *(beta)* | Door-knock prep: text-message drafts (for your phone) + one lunch-invite email (Gmail draft) + walk-in talking points + a HubSpot visit task on your committed date |
 | `contact-finder` (agent) | "Help me find this person" → Clay enrichment → HubSpot (reads `clay_mobile`) |
 | `ob-verification`, `ob-internal-research`, `ob-external-research`, `ob-messaging` (agents) | Shared RoE, research, and copywriting the motion skills spawn |
 
@@ -71,5 +72,6 @@ To check the installed version: `/plugin` → **Installed**. A Slack ping fires 
 `.github/workflows/notify-slack.yml` (requires the `SLACK_WEBHOOK_URL` repo secret).
 
 ## Status
-Built: `setup`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability` + `contact-finder` + the
-4 shared agents. Coming: `local-visits`, and the `reporting` + `ab-testing` analytics agents.
+Built: `setup`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability`, `reporting` +
+`contact-finder` + the 4 shared agents. `local-visits` is in **beta** (drafted, not fully built out).
+Coming: the `ab-testing` analytics agent, plus `create-tasks` and a `sanity-check` agent.

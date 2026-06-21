@@ -16,6 +16,15 @@ or pricing named as a challenge. **Hook:** losing the Buy Box, reactive pricing,
 **Use when:** founder/operator-led, small team, overwhelmed with Amazon ops, wants to focus on
 product/brand/DTC. **Hook:** bandwidth, operational complexity, "just want to focus on the product."
 
+## Agencies are a segment, NOT a competitor
+Amazon / e-commerce agencies are a **core ICP**, not competitors. Trellis works with many of them: they use
+the platform to run pricing and ads across their whole book of client brands (scale client results without
+scaling headcount, save their team hours, white-label). **Never disqualify a contact just because they work
+at an agency.** **Angle:** manage pricing + ads across all your brands from one place; grow client results
+without growing hours. **Proof:** the agency case studies (e.g., Sequence Commerce, 25+ brands; World
+Products, ~1,650 hours saved). Value prop is usually Ads Automation and/or Dynamic Pricing at portfolio
+scale, or Fully-Managed for a smaller shop.
+
 ## Vertical → value-prop affinity (starting point, not a rule)
 | Vertical | Primary | Secondary |
 |----------|---------|-----------|

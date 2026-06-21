@@ -97,6 +97,8 @@ competitor → a check-in tone, not a pitch** ("saw you went with X — how's it
 flag for their renewal. Same 5-touch structure as cold; written **as the most recent deal owner (the rep who met them)** so it reads
 as a continuation. **Job change = a top hook:** if research shows they've moved companies since you last spoke, lead with it ("we talked when you were at [Old Co] — saw you're now at [New Co]"); a champion who moved often opens the door at the new company.
 
+**Never be passive-aggressive about the gap.** Don't relitigate that things went quiet, and never self-blame ("it went quiet on my end," "my fault," "I dropped the ball") or guilt them ("you went dark," "haven't heard back from you"). Pick it back up forward-looking: acknowledge the prior conversation in one line, then go straight to a concrete, current reason to reconnect.
+
 **local** — in-person motion. Produce three things, all hand-typed and casual:
 - **Text messages (1–3, for the AE's phone):** first-name, no signature, no links unless asked,
   **≤320 characters each**. T1 = who you are + why them + a soft ask to connect while you're in town;

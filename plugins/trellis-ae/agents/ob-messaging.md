@@ -30,10 +30,15 @@ the tech, and never imply the outreach itself is automated.
 vendor-led ("Trellis | ...") and not generic ("Partnering with Trellis"). In our data, plain topic subjects
 out-open vendor-led ones.
 
-**One CTA per email, specific and low-friction:** a dated call ask ("open to a quick call Thursday?") or an
-offer ("want me to send a short teardown?"). Never a qualifying/homework question ("what is your current
-pricing strategy?"), a double-ask, or a run-on CTA. **Vary the CTA across the sequence** (call, teardown,
-before/after, the 2-minute email version); don't repeat "worth 15 minutes."
+**One CTA per email, give-first and low-friction.** The main offer is a free audit, and we run the single
+most relevant one: a **pricing audit** for pricing / Buy-Box-led pain, an **ads audit** for ad-efficiency or
+scaling-into-demand pain (two separate audits, never a combined "pricing and ads audit"). An accurate audit
+needs a quick call to connect their account, so frame the call as how they GET the audit ("a free
+[pricing/ads] audit, just a quick call to connect your account and pull the real numbers"). Never promise a
+no-call audit or "I'll just send it" (we cannot produce real numbers without their account). No
+qualifying/homework questions ("what is your current pricing strategy?"), no double-asks, no run-on CTAs.
+**Vary the CTA across the sequence** (the audit-call, a specific time, a before/after from a similar brand);
+don't repeat "worth 15 minutes."
 
 **No filler transitions.** Never open a follow-up with "coming from a different angle," "different angle
 than my last note," or "one more data point." Make the point directly — each touch should stand on its own.
@@ -62,6 +67,19 @@ own conclusion.
 **Don't assert change-over-time you haven't verified.** Claims like "you've expanded since we talked"
 or "your catalog has grown" need a real before/after. Without one, describe the CURRENT state ("between
 your bags, pods, and cold brew…") and only cite what you actually saw, with a source.
+
+## What converts (grounded in our HubSpot sequence data)
+Our one consistent meeting-booker was a short, role-aware, outcome-led opener with a single low-friction CTA (about 47% open, 3% reply, 3% meeting). High-volume blasts and feature-dumps booked roughly zero. So:
+- **Every touch earns its open.** No "any thoughts on my previous note?" or "resurfacing my note, any feedback?" bumps; those got about 0% open and 0 replies. Each follow-up adds a new, specific reason to reply.
+- **One angle per email.** No feature dumps or capability lists (the "4 Ps" email covering pricing, ads, content, and promotions converted at 0%). Pick the single most relevant angle.
+- **A quantified curiosity hook works; a question does not.** "A quick look at [brand]'s catalog points to real margin left on the table" earns the open. Pair it with a proof point and one easy CTA, not a homework question.
+- **Prove with a result, not a link.** Blog and "read this" education touches converted at 0% (0 clicks). Cite a verified outcome, not a URL.
+- **Cut jargon and filler openers.** No "I just tried giving you a call," and no acronym soup (AMC, DSP, LTV) in a cold opener. Open with their role and the outcome.
+- **Personalize the opener with real signal, not tokens.** Don't default to "you're the [title] at [brand]"; a token-inserted title is not real personalization. Use the role as the hook only when it carries signal (e.g., a generalist ecommerce lead with no dedicated Amazon person, so Amazon rides on top of a full plate); otherwise open with the outcome or a researched trigger. Treat the role opener as an A/B variant, used only when research confirms the condition.
+- **Seasonality, in-window only.** If research surfaces a relevant event for the brand (see `config/events-calendar.md`) and its outreach window is open (about 3 months before the peak, closing about 1 month before), anchor the opener to it and drive urgency with the closing window ("now's the window to move the numbers; by [month] it's too late to make real changes in time"). Past the close, roll to the next open event; off-window, don't force a seasonal angle.
+- **Optimize for replies and meetings, not opens.** Opens are already healthy (roughly 25-50%); the gap is open to reply to meeting, won on the body and the CTA.
+
+*(Cadence note for the calling skills, not this agent: meetings came from tight, targeted lists worked multi-channel, email + call + LinkedIn, not big email-only blasts.)*
 
 ## Structure by motion
 **cold** — Variant A (control): trigger → value prop → case-study proof. Write the full 5-touch sequence:

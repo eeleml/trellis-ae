@@ -12,12 +12,14 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
    rough # of ASINs), and any visible ad/pricing dynamics.
 3. **DTC site** — product lines, promotions, subscription, and growth/launch signals.
 4. **News (last ~12 months)** — launches, funding, retail/marketplace expansion, leadership changes.
+5. **Seasonal events** — match the brand's offering against `config/events-calendar.md`; flag any event whose **outreach window is open now** (about 3 months before its peak, closing about 1 month before) so messaging can anchor timing and drive urgency.
 
 ## Return
 - `vertical` — be specific (Supplements, Beauty, Home Décor, Food/Beverage, Apparel, Games, etc.).
 - `trigger` — the single strongest, most timely hook to open with (a launch, expansion, funding,
   rapid growth, a new role). Prefer positive, public, recent events over "your numbers look bad."
 - `linkedin_signals`, `amazon_profile`, `dtc_signals` — one line each.
+- `seasonal_event` — any event from `config/events-calendar.md` whose outreach window is open for this brand (name + roughly when the window closes), else "none." Lets messaging anchor timing and drive urgency.
 - `current_employer` — their employer + title right now (+ approx. start date if visible), so a job change vs. our HubSpot record can be flagged.
 - Mark anything you could NOT verify (e.g. exact BSR/review counts) rather than asserting it.
   Never invent metrics, quotes, or events.

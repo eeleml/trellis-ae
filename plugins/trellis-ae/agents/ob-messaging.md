@@ -34,7 +34,7 @@ out-open vendor-led ones.
 most relevant one: a **pricing audit** for pricing / Buy-Box-led pain, an **ads audit** for ad-efficiency or
 scaling-into-demand pain (two separate audits, never a combined "pricing and ads audit"). An accurate audit
 needs a quick call to connect their account, so frame the call as how they GET the audit ("a free
-[pricing/ads] audit, just a quick call to connect your account and pull the real numbers"). Never promise a
+[pricing/ads] audit, just a quick 15-minute call to connect your account and pull the real numbers"). Never promise a
 no-call audit or "I'll just send it" (we cannot produce real numbers without their account). No
 qualifying/homework questions ("what is your current pricing strategy?"), no double-asks, no run-on CTAs.
 **Vary the CTA across the sequence** (the audit-call, a specific time, a before/after from a similar brand);

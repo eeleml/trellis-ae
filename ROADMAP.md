@@ -22,8 +22,12 @@ Living build plan for the AE outbound plugin. (Safe to ship — no secrets or cu
 4. ✅ **`accountability`** — built. Checks Email 1 sent + follow-ups on cadence + ~2 calls in 4 business days + replies handled (skips converted); flags gaps per AE to Slack + a HubSpot note. Shares the metric layer with `reporting`. Run on a weekday `/schedule`.
 5. ✅ **`reporting`** — built as a skill (v1, pending a live test; see Done).
 6. **`ab-testing` agent** — reads the report and tunes messaging toward what works by **proposing** edits to `ob-messaging` / an A/B config (human-approved, not auto). DEPENDS ON: `ob-messaging` emitting A **and** B variants + a `trellis_ab_variant` tag, and a minimum sample before calling a winner. *(First tests Ethan wants: (a) include the case study to send, and (b) PDF attachment vs HubSpot preview link.)*
-7. **`create-tasks` agent** — creates call tasks in line with email timing; consults the AE each morning, reads replies, works with `reporting`, and creates the day's call tasks. *(Open design: call-only HubSpot sequence with enrollment vs. task-driven manual emails — see Open questions.)*
+7. **`create-tasks` agent — DECIDED: call tasks only.** Times **call tasks** to the email cadence; consults the AE each morning, reads replies, works with `reporting`, and creates the day's call tasks. **Never sends email from HubSpot** — emails stay Gmail drafts (cold-outbound + follow-ups); the AE sends from Gmail and the matching call task is marked complete. Open sub-choice: formal HubSpot **Sequences** (enroll → auto-generates call tasks) vs. plain dated **call tasks** (simpler; mirrors `local-visits`'s visit task) — leaning plain tasks for v1.
 8. **`sanity-check` agent** — runs a sanity check across all other agents/skills to confirm their process + outputs are sound.
+
+## 🔭 Later / future
+- **`linkedin` agent** — a LinkedIn outbound motion (connection requests + follow-up DMs / InMail), RoE-aware, **drafted for AE review — never auto-sends**. Pairs with the email + call motions toward a multi-channel cadence.
+- **LinkedIn copywriter** — LinkedIn-specific copy (short, native LinkedIn voice, no email formality), analogous to `ob-messaging` for email — likely a `linkedin` mode in `ob-messaging` or a sibling agent.
 
 ## 🧩 Ethan's decisions / setup
 - ~~Calling notes~~ **DECIDED & built:** contact-level note, 3 bullets (2 pain points + 1 historical context), glanceable for power-dialing.
@@ -38,4 +42,4 @@ Living build plan for the AE outbound plugin. (Safe to ship — no secrets or cu
 - **Cadence days** for the 5 touches (currently placeholder T+0/2/4/6/8) — confirm.
 - Draft-only now; **auto-send** later? (currently always draft, AE sends.)
 - Does the local-visits motion also need a post-visit follow-up email? (v1: opt-in — the AE can ask for one after the visit.)
-- **Call/email orchestration (for `create-tasks`):** option A = `reporting` tells the AE who's due → `create-tasks` makes the day's call tasks alongside the email drafts; option B = enroll contacts in a call-only HubSpot sequence and drive the emails off that enrolled list. Decide which is the source of truth for call timing.
+- **Call/email orchestration (for `create-tasks`) — DECIDED:** call tasks only (no email steps); **emails stay in Gmail** (drafted by cold-outbound / follow-ups; AE sends), and the AE marks the matching call task complete. **Never send from HubSpot.** Still open: formal HubSpot **Sequences** vs. plain dated **call tasks** as the call scaffold (leaning plain tasks).

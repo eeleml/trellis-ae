@@ -9,7 +9,11 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
 ## Run these lookups
 1. **LinkedIn** — the person's **current employer + title** and **prior employer(s) with rough dates** (so a move like Old Co → New Co is visible even when we have no old record), tenure, scope, recent posts, and any **job change** since we last engaged them.
 2. **Amazon** — the brand's category, product range, scale signals (best-seller rank, review counts,
-   rough # of ASINs), and any visible ad/pricing dynamics.
+   rough # of ASINs), and any visible ad/pricing dynamics. **A brand-name search returning nothing is NOT
+   proof they are absent from Amazon** — they may sell under a different consumer brand or seller name, or
+   their products may be listed by distributors/resellers. Before concluding, also check the brand's own
+   site for an Amazon link and try name variations. If you still cannot confirm, mark it **UNVERIFIED**
+   ("no Amazon storefront found under [names searched]"); never assert "no Amazon presence" as a fact.
 3. **DTC site** — product lines, promotions, subscription, and growth/launch signals.
 4. **News (last ~12 months)** — launches, funding, retail/marketplace expansion, leadership changes.
 5. **Seasonal events** — match the brand's offering against `config/events-calendar.md`; flag any event whose **outreach window is open now** (about 3 months before its peak, closing about 1 month before) so messaging can anchor timing and drive urgency.

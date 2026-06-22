@@ -14,7 +14,10 @@ and meetings, not writing email.
 | `/trellis-ae:follow-ups` | Finds your sent Email 1's and drafts the next in-thread touch on cadence; skips anyone who replied |
 | `/trellis-ae:accountability` | Checks Email 1's are sent, follow-ups + calls are happening, replies handled → flags gaps per AE |
 | `/trellis-ae:reporting` | **Your morning briefing** — replies waiting, yesterday's emails/calls + outcomes, cadence health, what worked, and how many call tasks to line up today (read-only) |
+| `/trellis-ae:create-tasks` | Creates the day's **call tasks** off the email cadence (the call analog of follow-ups) — deduped, due today, calling note attached. Calls only; never sends email |
+| `/trellis-ae:ab-testing` | Consult on what's working by variant + co-design the next messaging test; proposes `ob-messaging` changes for your approval (never auto-applies). Experiments live in `config/ab-tests.md` |
 | `/trellis-ae:local-visits` *(beta)* | Door-knock prep: text-message drafts (for your phone) + one lunch-invite email (Gmail draft) + walk-in talking points + a HubSpot visit task on your committed date |
+| `/trellis-ae:sanity-check` | Audits the plugin's own skills/agents for sound process + outputs (structure, invariants, cross-agent consistency); read-only, proposes fixes. Run before a release |
 | `contact-finder` (agent) | "Help me find this person" → Clay enrichment → HubSpot (reads `clay_mobile`) |
 | `ob-verification`, `ob-internal-research`, `ob-external-research`, `ob-messaging` (agents) | Shared RoE, research, and copywriting the motion skills spawn |
 
@@ -72,6 +75,6 @@ To check the installed version: `/plugin` → **Installed**. A Slack ping fires 
 `.github/workflows/notify-slack.yml` (requires the `SLACK_WEBHOOK_URL` repo secret).
 
 ## Status
-Built: `setup`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability`, `reporting` +
-`contact-finder` + the 4 shared agents. `local-visits` is in **beta** (drafted, not fully built out).
-Coming: the `ab-testing` analytics agent, plus `create-tasks` and a `sanity-check` agent.
+Built: `setup`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability`, `reporting`,
+`create-tasks`, `ab-testing`, `sanity-check` + `contact-finder` + the 4 shared agents. `local-visits`
+is in **beta** (drafted, not fully built out). Coming: a LinkedIn agent + copywriter (see ROADMAP).

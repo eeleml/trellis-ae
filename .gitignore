@@ -4,3 +4,7 @@ config.json
 *.local.json
 .env
 .claude/
+
+# Customer-specific case-study collateral — baked into the shareable zip only, never committed to the public repo
+plugins/trellis-ae/config/case-studies.md
+plugins/trellis-ae/config/case-studies/

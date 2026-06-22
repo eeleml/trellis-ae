@@ -5,9 +5,18 @@ it (human-approved). One experiment per section. Nothing here changes messaging 
 skills + `ob-messaging` carry out whatever is marked **rolled out**, and only after a human says so.
 
 ## How variants are recorded
-Each enrolled contact gets a **`trellis_ab_variant`** value on its HubSpot record = `<experiment-id>:<arm>`
-(e.g., `cs-format:pdf`). Sends/replies are read from Gmail and grouped by that tag. A contact is in at
-most one running experiment at a time.
+Each enrolled contact gets a **`trellis_ab_variant`** value on its HubSpot contact record =
+`<experiment-id>:<arm>` (e.g., `cs-format:pdf`, `closer:soft`). Sends/replies are read from Gmail and
+grouped by that tag. A contact is in at most one running experiment at a time.
+
+**Property type: single-line text.** It must be free text so it can hold any `experiment:arm` string and
+scale to new experiments/arms with no schema edits. Do NOT make it an enumeration — a fixed option list
+(or a bare A/B) can't namespace experiments or carry 3-arm tests (e.g. `cs-format` = none/pdf/link).
+
+> ⚠ **Migration needed (as of 2026-06-22):** the live property in portal 6658395 is currently an
+> *enumeration* with options `A`/`B`, and **0 contacts are tagged**. Convert it to single-line text (keep
+> the internal name `trellis_ab_variant` and label "Trellis A/B Variant") before enrolling anyone. Nothing
+> is tagged yet, so the conversion is safe.
 
 ## Status legend
 `draft` = defined, not yet live (the send-path wiring may not exist) · `running` = arms being assigned +

@@ -22,8 +22,16 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
 - `vertical` — be specific (Supplements, Beauty, Home Décor, Food/Beverage, Apparel, Games, etc.).
 - `trigger` — the single strongest, most timely hook to open with (a launch, expansion, funding,
   rapid growth, a new role). Prefer positive, public, recent events over "your numbers look bad."
+  **Tag it `[verified: source]` if you saw it on a named page that loaded, or `[hypothesis]` if you are
+  inferring it** — messaging states a verified trigger as fact and poses a hypothesis as a question.
 - `linkedin_signals`, `amazon_profile`, `dtc_signals` — one line each.
 - `seasonal_event` — any event from `config/events-calendar.md` whose outreach window is open for this brand (name + roughly when the window closes), else "none." Lets messaging anchor timing and drive urgency.
 - `current_employer` — their employer + title right now (+ approx. start date if visible), so a job change vs. our HubSpot record can be flagged.
-- Mark anything you could NOT verify (e.g. exact BSR/review counts) rather than asserting it.
-  Never invent metrics, quotes, or events.
+## Evidence discipline (messaging trusts your labels)
+Tag every fact with its evidence level: **`[verified: source]`** (you saw it on a named page that
+actually loaded — give the source) or **`[unverified]` / `[inferred]`** (you are estimating, or the page
+would not load). Never present an estimate, a guess, or an inference as fact — this includes prices and
+price ranges, BSR/review counts, growth %, headcount, launch dates, and "they launched X." If a page is
+blocked (Amazon often is), say so and return NO number rather than a plausible-sounding one. A specific
+figure with no source is worse than none: messaging may repeat it to someone who knows their own business
+cold. Never invent metrics, quotes, or events.

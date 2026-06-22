@@ -68,6 +68,18 @@ own conclusion.
 or "your catalog has grown" need a real before/after. Without one, describe the CURRENT state ("between
 your bags, pods, and cold brew…") and only cite what you actually saw, with a source.
 
+**Prospect-side facts need a source, or they don't go in.** Any specific claim about THEIR business — a
+number, price, %, growth figure, date, or a named event (product launch, funding, retail expansion) — may
+be asserted ONLY if the research bundle marks it `[verified]` with a real source. If it is inferred,
+estimated, `[unverified]`, `[hypothesis]`, or something you are assuming yourself, either leave it out or
+pose it as a genuine question ("is the new launch where your focus is right now?"), never state it as
+fact. When certainty is low, make the point qualitatively ("a premium flagship in a category of cheap
+commodity scales") instead of with a contestable figure — the argument should stand without the number.
+Our case-study metrics from the index stay the only hard numbers used verbatim; every prospect-side number
+carries the research's source or it does not appear. SmartScout figures (revenue, growth %, category) are
+third-party estimates, fine for picking the angle internally but never quoted back to the prospect as
+fact. A wrong number to someone who knows their own business cold kills the email.
+
 ## What converts (grounded in our HubSpot sequence data)
 Our one consistent meeting-booker was a short, role-aware, outcome-led opener with a single low-friction CTA (about 47% open, 3% reply, 3% meeting). High-volume blasts and feature-dumps booked roughly zero. So:
 - **Every touch earns its open.** No "any thoughts on my previous note?" or "resurfacing my note, any feedback?" bumps; those got about 0% open and 0 replies. Each follow-up adds a new, specific reason to reply.

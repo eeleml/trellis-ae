@@ -24,6 +24,12 @@ and Fathom (search_meetings, find_person, list_meetings, get_meeting_summary, ge
 `smartscout_subcategory`, `smartscout_brand_name`, `smartscout_3_month_growth`,
 `smartscout_6_month_growth`, `smartscout_country_code`. State whether each is populated.
 
+**Treat SmartScout as a grain-of-salt estimate, not ground truth.** It is third-party modeled data and is
+often materially off (revenue, growth %, category, and any price points can be wrong or stale). Surface each
+figure explicitly as a SmartScout *estimate* and use it only as a directional signal for routing (vertical /
+value-prop), never as a fact to quote back to the prospect. When it conflicts with what live web research or
+the brand's own site shows, the verified source wins.
+
 ## Job-change check (capture it — a top re-engagement signal)
 A job change shows up two ways — check both:
 1. **Same record, updated in place** — we key on unique emails, but sometimes the email/company is
@@ -48,6 +54,6 @@ didn't land before — flag a call-first approach.
 - `prior_conversations` — what was discussed/objected (from Fathom + notes), or "none — cold".
 - `deal_history` — for closed_lost: stage, lost reason, **how it ended (esp. competitor-signed — which competitor + that contract's length/renewal timing)**, date, rep.
 - `job_change` — if detected: prior company + engagement type + outcome + date, plus the new company + approx. move date; else "none / same company." Feeds the calling-note history bullet and the messaging opener.
-- `smartscout` — the populated fields (revenue, ASINs, category, growth) and any gaps.
+- `smartscout` — the populated fields (revenue, ASINs, category, growth) and any gaps, flagged as SmartScout *estimates* (directional only, not facts to assert).
 - Be honest: for cold contacts this is usually thin — say so rather than padding. Never fabricate
   meeting content; if Fathom has no record, state that explicitly.

@@ -3,6 +3,8 @@
 The `/trellis-ae:ab-testing` skill reads this file to know what's being tested and proposes updates to
 it (human-approved). One experiment per section. Nothing here changes messaging on its own — the motion
 skills + `ob-messaging` carry out whatever is marked **rolled out**, and only after a human says so.
+`/trellis-ae:cold-outbound` reads this file at draft time to offer the AE a test to run on the batch (pick
+one from here, define their own, or brainstorm via `ab-testing`).
 
 ## How variants are recorded
 Each enrolled contact gets a **`trellis_ab_variant`** value on its HubSpot contact record =
@@ -25,9 +27,9 @@ measured · `concluded` = winner picked / rolled out.
 ---
 
 ## cs-format — does the case study help, and in what format?
-- **Status:** `draft` — NOT yet live. Needs the send-path to (a) split contacts across arms + stamp
-  `trellis_ab_variant`, and (b) actually **attach a case-study PDF** / **insert a HubSpot preview link**
-  in the Gmail draft. That capability isn't built yet (phase 2).
+- **Status:** `draft` — NOT yet live. (a) Splitting contacts across arms + stamping `trellis_ab_variant`
+  now exists (the `cold-outbound` picker). (b) Still needs the send-path to actually **attach a case-study
+  PDF** / **insert a HubSpot preview link** in the Gmail draft — that capability isn't built yet (phase 2).
 - **Hypothesis:** including the case study lifts reply + meeting rate, and the **format** (PDF vs link) matters.
 - **Arms (≈1/3 each):**
   - `cs-format:none` — control: no case study attached (today's behavior — the metric is still cited in the body).
@@ -75,8 +77,10 @@ which could reuse the registry later — extract a shared helper at that point i
 ---
 
 ## closer-style — does a soft close beat a clipped tag-CTA?
-- **Status:** `draft` — NOT yet live. Needs the same variant-assignment + `trellis_ab_variant` wiring as
-  `cs-format`; copy-only otherwise (no attachment, no new capability).
+- **Status:** `ready` — the variant-assignment wiring now exists (the `cold-outbound` picker assigns arms +
+  stamps the tag, `ob-messaging` renders the arm, `follow-ups` applies it to E4/breakup). Only prerequisite:
+  `trellis_ab_variant` must be single-line text (or use the A/B-enum stopgap for this single 2-arm test).
+  **Ethan wants this run first.**
 - **Hypothesis:** on the softer touches (E4, the breakup, any "I can send X" line), a low-pressure,
   forward-looking close earns more replies than a clipped tag-CTA. `ob-messaging` already **defaults to the
   soft close** (clipped tags like "Want it?" / "I'm one reply away" are banned there); this test checks

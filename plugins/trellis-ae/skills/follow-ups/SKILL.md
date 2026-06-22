@@ -45,7 +45,7 @@ that lands on a weekend rolls to the next weekday.
      - Draft with the right threading: **E2** → reply to E1's sent message (`replyToMessageId`);
        **E3** → a NEW draft (fresh subject, new thread); **E4** → reply to E3; **breakup** → reply to
        Thread B's latest message.
-     - **Generate the next touch** via the **`ob-messaging`** shared agent (motion `follow_up`) — pass the touch (E2/E3/E4/breakup), the prior thread, and the plan's angle. It reads the prior thread so it reads
+     - **Generate the next touch** via the **`ob-messaging`** shared agent (motion `follow_up`) — pass the touch (E2/E3/E4/breakup), the prior thread, the plan's angle, and the contact's `trellis_ab_variant` if set (so the touch matches the assigned arm — e.g. **closer-style** changes the E4 and breakup closers). It reads the prior thread so it reads
        like a real follow-up (reference the earlier note naturally). Tone: confident, peer-to-peer, no
        buzzwords, never mention AI/automation.
    - After drafting E3 (the new thread), **record its thread id/subject** back into the plan so the next

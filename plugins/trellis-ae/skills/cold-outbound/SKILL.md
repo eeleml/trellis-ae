@@ -25,6 +25,25 @@ if it's large (40+), say so and confirm before a long run (or offer to batch it)
 - Connected MCPs: **Gmail** (drafting), **HubSpot** (records/RoE), **Fathom** (calls), and **Drive/
   Notion** (case studies). Load tools via ToolSearch as needed.
 
+## Before you draft: pick the batch's A/B test
+We improve outbound by testing, so before drafting, ask the AE **which experiment to run on this batch**
+(one experiment per batch). Offer four paths:
+1. **From the registry** — read `config/ab-tests.md` and list the experiments (id + one-line hypothesis +
+   arms), e.g. *closer-style* (soft vs. clipped close). They pick one.
+2. **Their own** — they describe a variant in their words; capture it as an ad-hoc experiment (id + 2 arms
+   + which touch it changes), and offer to save it to `config/ab-tests.md`.
+3. **Brainstorm from what's worked** — offer to run the **`ab-testing`** skill, which reads recent results
+   by variant and co-designs a test from what's actually converting.
+4. **Control only** — no test; draft everyone with the default messaging.
+Keep it to one quick question; if they don't care today, default to **control only**.
+
+Once they pick a test (1–3): for each cleared contact, assign an **arm** by a stable hash of the contact id
+(even split across arms; the same contact always lands in the same arm on re-runs) and **stamp
+`trellis_ab_variant = <experiment-id>:<arm>`** on the HubSpot contact (single-line text property — see
+`config/ab-tests.md`). Pass the experiment + arm into `ob-messaging` so it renders that arm, and `follow-ups`
+reads the same tag for the later touches (e.g. closer-style changes E4 + the breakup). A contact is in
+**one** experiment at a time — if it's already tagged into a running one, leave it.
+
 ## Steps (per contact — run contacts concurrently where you can)
 1. **Resolve** the contact in HubSpot (by email; else search name + company). Get the contact, the
    associated company, and the SmartScout fields on the company record.
@@ -36,7 +55,7 @@ if it's large (40+), say so and confirm before a long run (or offer to batch it)
    case study read **live** from the team case-study index (Drive/Notion pointer in config) — use its
    metric **verbatim**; if the vertical isn't covered, use the strongest in-value-prop metric as generic
    cross-category proof. Then spawn the **`ob-messaging`** shared agent (motion `cold`) with the research
-   + chosen value prop + case study. It returns the full **5-touch sequence** (E1 new → E2 reply; E3 new
+   + chosen value prop + case study + the batch's experiment/arm if one was picked. It returns the full **5-touch sequence** (E1 new → E2 reply; E3 new
    → E4 reply → breakup), the per-touch angles for the follow-up plan, and a short outreach summary —
    all in Trellis voice. *(Sequence structure, lengths, threading, and tone live in `ob-messaging`, so
    the team tunes messaging in one place.)*

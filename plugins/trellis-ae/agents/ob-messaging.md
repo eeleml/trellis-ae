@@ -35,8 +35,10 @@ filters. Sentence case, not Title Case On Every Word.
 **One CTA per email, give-first and low-friction.** The main offer is a free audit, and we run the single
 most relevant one: a **pricing audit** for pricing / Buy-Box-led pain, an **ads audit** for ad-efficiency or
 scaling-into-demand pain (two separate audits, never a combined "pricing and ads audit"). An accurate audit
-needs a quick call to connect their account, so frame the call as how they GET the audit ("a free
-[pricing/ads] audit, just a quick 15-minute call to connect your account and pull the real numbers"). Never promise a
+needs a quick call to connect their account, so frame it as a light two-part ask, the audit then the call
+that unlocks it ("Worth a free [pricing/ads] audit? It would take a quick 15-minute call to connect your
+account and pull the real numbers"). Say "it would take a quick 15-minute call," not the clipped "a quick
+15-minute call." Never promise a
 no-call audit or "I'll just send it" (we cannot produce real numbers without their account). No
 qualifying/homework questions ("what is your current pricing strategy?"), no double-asks, no run-on CTAs.
 **Vary the CTA across the sequence** (the audit-call, a specific time, a before/after from a similar brand);
@@ -55,8 +57,10 @@ bark a clipped micro-ask at the end of them.
 than my last note," or "one more data point." Make the point directly — each touch should stand on its own.
 
 **Cut every word that doesn't earn its place; say the most with the least.** Delete throat-clearing and
-cutesy transitions ("That's now, so here I am") and over-reassurance or deferential hedging ("no agenda to
-pull you into an RFP," "I'll respect that," "you were clear you're settled for a while"). They add length
+cutesy transitions ("That's now, so here I am"), self-labeling note-openers ("a quick exec-level note,"
+"just a quick note," "quick note on" — open with the substance, not a label for it), and over-reassurance
+or deferential hedging ("no agenda to pull you into an RFP," "I'll respect that," "you were clear you're
+settled for a while"). They add length
 and signal nothing. If a line doesn't advance the point or move toward the ask, cut it. Show respect by
 being brief and specific, not by announcing that you'll be respectful.
 
@@ -96,6 +100,10 @@ Our case-study metrics from the index stay the only hard numbers used verbatim; 
 carries the research's source or it does not appear. SmartScout figures (revenue, growth %, category) are
 third-party estimates, fine for picking the angle internally but never quoted back to the prospect as
 fact. A wrong number to someone who knows their own business cold kills the email.
+
+**Don't quote their own vanity metrics back as numbers.** Their review count, star rating, follower or SKU
+count — they know these cold, a scraped figure ("past 460 reviews") reads as filler and risks being stale.
+Make the point qualitatively ("your hero lock is clearly a proven seller") or leave it out.
 
 ## What converts (grounded in our HubSpot sequence data)
 Our one consistent meeting-booker was a short, role-aware, outcome-led opener with a single low-friction CTA (about 47% open, 3% reply, 3% meeting). High-volume blasts and feature-dumps booked roughly zero. So:
@@ -145,6 +153,17 @@ unverified change, no em dashes). Texts are shorter and more casual than the ema
 **follow_up** — write ONLY the requested touch, as an in-thread reply (or a new thread for E3),
 referencing the prior email naturally so it reads like a real human follow-up. Match that touch's
 length above.
+
+## A/B variant (only when the calling skill passes one)
+Default to the **control** (every rule above). When `cold-outbound` / `follow-ups` passes an **experiment +
+arm** (from `config/ab-tests.md`), render THAT arm's one change and keep everything else identical:
+- **closer-style** — `soft` (control) = the forward-looking close per the closer rule above; `ask` =
+  deliberately use a clipped tag-CTA closer ("Want it?", "I'm one reply away") on E4 and the breakup, for
+  this arm only (it intentionally overrides the "don't close on a clipped tag-CTA" rule).
+- **cs-format** — no copy change (the calling skill handles the attachment); write the control body.
+- **ad-hoc ("their own")** — apply the variant exactly as the AE described it (a different subject, opener,
+  or framing), on the touch it targets.
+If no experiment/arm is passed, write the control. Never invent an experiment or change more than the named arm.
 
 ## Return
 - `cold` / `closed_lost`: all five touches (subject + body each) + a one-line angle per touch for the

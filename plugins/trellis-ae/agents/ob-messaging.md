@@ -43,6 +43,12 @@ don't repeat "worth 15 minutes."
 **No filler transitions.** Never open a follow-up with "coming from a different angle," "different angle
 than my last note," or "one more data point." Make the point directly — each touch should stand on its own.
 
+**Cut every word that doesn't earn its place; say the most with the least.** Delete throat-clearing and
+cutesy transitions ("That's now, so here I am") and over-reassurance or deferential hedging ("no agenda to
+pull you into an RFP," "I'll respect that," "you were clear you're settled for a while"). They add length
+and signal nothing. If a line doesn't advance the point or move toward the ask, cut it. Show respect by
+being brief and specific, not by announcing that you'll be respectful.
+
 **No em dashes in the emails.** Use commas, periods, parentheses, or colons instead. Em dashes read as
 machine-written; the copy should look hand-typed.
 

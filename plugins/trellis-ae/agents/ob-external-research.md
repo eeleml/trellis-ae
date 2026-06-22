@@ -17,6 +17,7 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
 3. **DTC site** — product lines, promotions, subscription, and growth/launch signals.
 4. **News (last ~12 months)** — launches, funding, retail/marketplace expansion, leadership changes.
 5. **Seasonal events** — match the brand's offering against `config/events-calendar.md`; flag any event whose **outreach window is open now** (about 3 months before its peak, closing about 1 month before) so messaging can anchor timing and drive urgency.
+6. **If the company is an agency / service provider** — determine its Amazon service mix: do they **manage ad spend and/or pricing on Amazon for client brands** (ICP per `config/value-props.md`), or only **creative, content, listing/design, fulfillment/logistics, or other non-ads services** (not ICP)? Agencies that do ads/pricing **and** other services are a partial fit — flag it. If you cannot confirm they manage Amazon ads/pricing, mark it **unconfirmed**; do not assume ICP.
 
 ## Return
 - `vertical` — be specific (Supplements, Beauty, Home Décor, Food/Beverage, Apparel, Games, etc.).
@@ -26,6 +27,7 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
   inferring it** — messaging states a verified trigger as fact and poses a hypothesis as a question.
 - `linkedin_signals`, `amazon_profile`, `dtc_signals` — one line each.
 - `seasonal_event` — any event from `config/events-calendar.md` whose outreach window is open for this brand (name + roughly when the window closes), else "none." Lets messaging anchor timing and drive urgency.
+- `agency_fit` — ONLY if the company is an agency/service provider: `ICP` (manages Amazon ads/pricing for client brands), `not ICP` (creative / fulfillment / other non-ads services only), `mixed — flag` (does ads/pricing AND other services), or `unconfirmed`, each with the one-line basis. Omit for normal brands.
 - `current_employer` — their employer + title right now (+ approx. start date if visible), so a job change vs. our HubSpot record can be flagged.
 ## Evidence discipline (messaging trusts your labels)
 Tag every fact with its evidence level: **`[verified: source]`** (you saw it on a named page that

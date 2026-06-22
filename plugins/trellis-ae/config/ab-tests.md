@@ -62,3 +62,28 @@ tagged and sends accumulate, it judges the arms.
 **Confirm before building:** which case studies go in the registry; the minimum sample (≥~100/arm is a
 placeholder); and whether to wire `cold-outbound` only first (vs. also `closed-lost` / `local-visits`,
 which could reuse the registry later — extract a shared helper at that point if so).
+
+---
+
+## closer-style — does a soft close beat a clipped tag-CTA?
+- **Status:** `draft` — NOT yet live. Needs the same variant-assignment + `trellis_ab_variant` wiring as
+  `cs-format`; copy-only otherwise (no attachment, no new capability).
+- **Hypothesis:** on the softer touches (E4, the breakup, any "I can send X" line), a low-pressure,
+  forward-looking close earns more replies than a clipped tag-CTA. `ob-messaging` already **defaults to the
+  soft close** (clipped tags like "Want it?" / "I'm one reply away" are banned there); this test checks
+  whether that default is actually the reply-winner or whether a direct micro-ask pulls more.
+- **Arms (≈1/2 each):**
+  - `closer:soft` — control / current default: forward-looking, door left open ("let me know if that
+    changes," "if [priority] shifts this season, I'm around").
+  - `closer:ask` — a clipped direct micro-ask, re-introduced for this arm only ("Want it?", "Want a quick
+    teardown?", "I'm one reply away").
+  - *(optional 3rd arm `closer:none` — drop the closing line entirely, let the prior sentence stand.)*
+- **Scope:** ONLY the closing line of E4 / breakup / "I can send X" touches. The early give-first audit ask
+  and the meeting ask ("Open to 15 minutes?", "Want me to pull a teardown?") are identical across arms.
+- **Metric:** reply rate (primary), meeting-booked rate (secondary).
+- **Minimum sample:** ≥ ~100 sends per arm before calling a winner (placeholder — reply rates are low, so
+  anything smaller is directional only).
+- **Assignment:** at draft time (`cold-outbound` / `follow-ups`), stamp `trellis_ab_variant = closer:<arm>`
+  by stable hash of contact id. Once the `cs-format` phase-2 wiring exists, this needs only the
+  arm-appropriate closer from `ob-messaging` — nothing new to build.
+- **Results so far:** —

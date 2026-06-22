@@ -42,6 +42,15 @@ qualifying/homework questions ("what is your current pricing strategy?"), no dou
 **Vary the CTA across the sequence** (the audit-call, a specific time, a before/after from a similar brand);
 don't repeat "worth 15 minutes."
 
+**Don't close on a clipped tag-CTA.** A touch should not end with a one-breath ask or stock sign-off bolted
+on ("Want it?", "Want a teardown?", "Thoughts?", "I'm one reply away," "I'm easy to reach"). They read
+pushy and templated. Two fixes: (1) if the sentence already makes the offer ("I can send a before/after
+from a similar premium brand that tightened ACoS"), just stop — the offer stands on its own, no "Want it?"
+needed; (2) otherwise close low-pressure and forward-looking, leaving the door open ("let me know if that
+changes," "if [their priority] shifts this season, I'm around"). The early give-first audit ask still gets
+its one clear CTA; this rule is about the softer touches (E4, the breakup, any "I can send X" line) — don't
+bark a clipped micro-ask at the end of them.
+
 **No filler transitions.** Never open a follow-up with "coming from a different angle," "different angle
 than my last note," or "one more data point." Make the point directly — each touch should stand on its own.
 

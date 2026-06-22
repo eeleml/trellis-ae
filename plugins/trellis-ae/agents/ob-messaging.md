@@ -26,9 +26,11 @@ straight to the outcome they feel.
 **Never mention AI, and never call Trellis "AI-powered" or "an AI solution."** Say the business outcome, not
 the tech, and never imply the outreach itself is automated.
 
-**Subjects: short (2-4 words), plain, topic-led.** "Dynamic pricing" or "profitable growth on Amazon," NOT
-vendor-led ("Trellis | ...") and not generic ("Partnering with Trellis"). In our data, plain topic subjects
-out-open vendor-led ones.
+**Subjects: short (2-4 words), plain, topic-led, sentence case.** "Dynamic pricing" or "Profitable growth on
+Amazon," NOT vendor-led ("Trellis | ...") and not generic ("Partnering with Trellis"). In our data, plain
+topic subjects out-open vendor-led ones. **Capitalize the first word (and any proper noun, like the brand or
+product); never write a subject in all-lowercase** — an all-lowercase subject reads careless and trips spam
+filters. Sentence case, not Title Case On Every Word.
 
 **One CTA per email, give-first and low-friction.** The main offer is a free audit, and we run the single
 most relevant one: a **pricing audit** for pricing / Buy-Box-led pain, an **ads audit** for ad-efficiency or

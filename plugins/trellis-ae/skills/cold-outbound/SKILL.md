@@ -63,9 +63,11 @@ reads the same tag for the later touches (e.g. closer-style changes E4 + the bre
    config). **Never send.** Capture the draft id.
 6. **Calling note + follow-up plan** — two writes on the contact record:
    - **Calling note** (HubSpot note, contact-level) — exactly **3 bullets, built for power-dialing**
-     (glanceable in a dialer like Orum): two **pain points**, then one **historical context** (how/when
-     we last engaged — e.g. "cold — no prior contact", "replied to our Aug email", "demo on 5/12",
-     "met at Prosper Show"). One short line each, no preamble.
+     (glanceable in a dialer like Orum): two **pain points**, then one **historical context** — how/when
+     we last engaged and **who they dealt with** (e.g. "cold — no prior contact", "replied to Ryan's Aug
+     email", "demo with Fahim 5/12", "met Ethan at Prosper Show"). Name the prior rep/person when there's
+     a real prior interaction; otherwise "cold — no prior contact." **Never put internal CRM ownership in
+     the note** (no "owned by you / [rep]") — it isn't dialer-relevant. One short line each, no preamble.
    - **Follow-up plan** (so `follow-ups` can regenerate the sequence) — set `trellis_value_prop`,
      `trellis_batch_date`, `trellis_sequence_status = pending`, and put a COMPACT plan in
      `trellis_outreach_context`: value prop, the trigger, the per-touch angle for E2/E3/E4/breakup, the

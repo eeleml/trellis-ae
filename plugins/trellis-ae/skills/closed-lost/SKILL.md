@@ -39,12 +39,12 @@ When the list comes as a **HubSpot list link**, open it with **Claude in Chrome*
    calls first**) and `ob-external-research` (what's changed on their side) in parallel.
 4. **Message** — read the **lost reason** (`closed_lost_reason`) and whether they signed with a
    competitor, pick the value prop + a verified case study (live from Drive/Notion, metric verbatim),
-   then spawn the **`ob-messaging`** shared agent (motion `closed_lost`) with all of that. It tailors the
+   then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `closed_lost`) with all of that. It tailors the
    re-engagement angle to why they passed (price → new ROI; missing feature → "we built it"; timing →
    "is now better?"; no bandwidth → fully-managed; **competitor-signed → a check-in tone, not a pitch**),
    leads from the prior conversation, and writes the same **5-touch sequence sent as the most recent deal owner** (the rep who actually met with them — not necessarily the contact owner; if that owner is an inactive user, flag for reassignment to a live rep).
    *(The angle logic + voice live in `ob-messaging` — one place to tune.)*
-5. **Draft Email 1 in Gmail** (`create_draft`, to the prospect; never send). Capture the draft id.
+5. **Draft Email 1 in Gmail** — use ob-messaging's E1 subject + body **verbatim** (append only the signature). **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (top of the agent) for the `closed_lost` motion; if any fail, send it back to redo — don't fix it yourself.** Then `create_draft` (to the prospect; never send). Capture the draft id.
 6. **Calling note + follow-up plan** (same mechanism as cold):
    - **Calling note** (contact-level, 3 bullets, power-dialing): two pain points, then one historical
      bullet = **the lost reason + when** (e.g. "lost on price, demo 11/24" or "signed w/ <competitor>
@@ -63,6 +63,7 @@ When the list comes as a **HubSpot list link**, open it with **Claude in Chrome*
 
 ## Rules
 - **Draft only — never send.** Lead from the prior conversation + what's changed, never a cold pitch.
+- **All prospect-facing copy comes from `ob-messaging`, used verbatim** — never write or rewrite it yourself; gate every draft against ob-messaging's HARD CONSTRAINTS first.
 - Respect the 3-month cool-off and hard-excludes. Competitor-signed → check-in, not a pitch.
 - Never fabricate the prior conversation — pull it from HubSpot/Fathom; if there's no record, say so
   and keep it light ("wanted to reconnect").

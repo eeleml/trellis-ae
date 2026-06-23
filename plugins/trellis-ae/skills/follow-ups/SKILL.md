@@ -45,9 +45,8 @@ that lands on a weekend rolls to the next weekday.
      - Draft with the right threading: **E2** → reply to E1's sent message (`replyToMessageId`);
        **E3** → a NEW draft (fresh subject, new thread); **E4** → reply to E3; **breakup** → reply to
        Thread B's latest message.
-     - **Generate the next touch** via the **`ob-messaging`** shared agent (motion `follow_up`) — pass the touch (E2/E3/E4/breakup), the prior thread, the plan's angle, and the contact's `trellis_ab_variant` if set (so the touch matches the assigned arm — e.g. **closer-style** changes the E4 and breakup closers). It reads the prior thread so it reads
-       like a real follow-up (reference the earlier note naturally). Tone: confident, peer-to-peer, no
-       buzzwords, never mention AI/automation.
+     - **Generate the next touch** — you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `follow_up`) — pass the touch (E2/E3/E4/breakup), the prior thread, the plan's angle, and the contact's `trellis_ab_variant` if set (so the touch matches the assigned arm — e.g. **closer-style** changes the E4 and breakup closers). It reads the prior thread so it reads
+       like a real follow-up (reference the earlier note naturally). **Use its returned subject + body verbatim** (only the threading/reply wiring is yours); before drafting, **gate the touch against `ob-messaging`'s HARD CONSTRAINTS (top of the agent); if any fail, send it back to redo — never fix it yourself.**
    - After drafting E3 (the new thread), **record its thread id/subject** back into the plan so the next
      run reconciles Thread B exactly.
 5. **Hand back (short):**
@@ -58,6 +57,7 @@ that lands on a weekend rolls to the next weekday.
 
 ## Rules
 - **Draft only — never send.** Never double-draft a touch. Never follow into a live reply.
+- **All copy comes from `ob-messaging`, used verbatim.** Never write or rewrite the touch yourself; gate it against ob-messaging's HARD CONSTRAINTS before drafting.
 - Business-day cadence; key all timing off real **sent** dates, not draft dates.
 - **Cold + closed-lost only.** Local-visits follow-through is handled by `accountability`.
 - Never fabricate; regenerate bodies from the stored plan + the live thread.

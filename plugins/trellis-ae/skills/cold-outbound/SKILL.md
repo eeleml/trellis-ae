@@ -54,13 +54,13 @@ reads the same tag for the later touches (e.g. closer-style changes E4 + the bre
 4. **Message** — choose the best value prop (`config/value-props.md` affinity + the research) and ONE
    case study read **live** from the team case-study index (Drive/Notion pointer in config) — use its
    metric **verbatim**; if the vertical isn't covered, use the strongest in-value-prop metric as generic
-   cross-category proof. Then spawn the **`ob-messaging`** shared agent (motion `cold`) with the research
+   cross-category proof. Then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `cold`), passing it the research
    + chosen value prop + case study + the batch's experiment/arm if one was picked. It returns the full **5-touch sequence** (E1 new → E2 reply; E3 new
    → E4 reply → breakup), the per-touch angles for the follow-up plan, and a short outreach summary —
-   all in Trellis voice. *(Sequence structure, lengths, threading, and tone live in `ob-messaging`, so
-   the team tunes messaging in one place.)*
-5. **Draft Email 1 in Gmail** — `create_draft` (to: the prospect, subject, body; signature from
-   config). **Never send.** Capture the draft id.
+   all in Trellis voice. **Do not write, rewrite, shorten, or "polish" any subject or body yourself** — sequence structure, lengths, threading, voice, and every copy rule live in `ob-messaging`, so the team tunes messaging in one place. If it doesn't return usable copy, re-run the agent; never substitute your own.
+5. **Draft Email 1 in Gmail** — use ob-messaging's E1 **subject and body exactly as returned** (only
+   append the signature from config); never edit, shorten, or rewrite them. **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (the block at the top of the agent) for the `cold` motion; if ANY fail, send it back to `ob-messaging` to redo — do NOT fix it yourself.**
+   Then `create_draft` (to: the prospect, subject, body, signature from config). **Never send.** Capture the draft id.
 6. **Calling note + follow-up plan** — two writes on the contact record:
    - **Calling note** (HubSpot note, contact-level) — exactly **3 bullets, built for power-dialing**
      (glanceable in a dialer like Orum): two **pain points**, then one **historical context** — how/when
@@ -83,5 +83,6 @@ reads the same tag for the later touches (e.g. closer-style changes E4 + the bre
 
 ## Rules
 - **Draft only — never send.** Cap 25/contacts per run. Respect RoE (step 2 is not optional).
+- **All prospect-facing copy comes from `ob-messaging`, period.** Every subject and body (all five touches) is produced by the `ob-messaging` subagent — you may not write, rewrite, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from ob-messaging, it doesn't go in the draft.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.

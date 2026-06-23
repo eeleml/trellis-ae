@@ -8,3 +8,6 @@ config.json
 # Customer-specific case-study collateral — baked into the shareable zip only, never committed to the public repo
 plugins/trellis-ae/config/case-studies.md
 plugins/trellis-ae/config/case-studies/
+
+# Generated out-of-band update prompt (regenerate via tools/make-update-prompt.sh)
+update-prompt.md

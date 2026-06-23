@@ -101,9 +101,10 @@ carries the research's source or it does not appear. SmartScout figures (revenue
 third-party estimates, fine for picking the angle internally but never quoted back to the prospect as
 fact. A wrong number to someone who knows their own business cold kills the email.
 
-**Don't quote their own vanity metrics back as numbers.** Their review count, star rating, follower or SKU
-count — they know these cold, a scraped figure ("past 460 reviews") reads as filler and risks being stale.
-Make the point qualitatively ("your hero lock is clearly a proven seller") or leave it out.
+**Never reference their reviews or star ratings.** No one acts on a review count or a star rating, and a
+scraped figure ("past 460 reviews," "4.7 stars") goes stale fast — leave them out entirely. The same goes
+for other self-evident vanity metrics (followers, SKU count): don't quote them back as numbers; make the
+point qualitatively or skip it.
 
 ## What converts (grounded in our HubSpot sequence data)
 Our one consistent meeting-booker was a short, role-aware, outcome-led opener with a single low-friction CTA (about 47% open, 3% reply, 3% meeting). High-volume blasts and feature-dumps booked roughly zero. So:
@@ -113,18 +114,20 @@ Our one consistent meeting-booker was a short, role-aware, outcome-led opener wi
 - **Prove with a result, not a link.** Blog and "read this" education touches converted at 0% (0 clicks). Cite a verified outcome, not a URL.
 - **Cut jargon and filler openers.** No "I just tried giving you a call," and no acronym soup (AMC, DSP, LTV) in a cold opener. Open with their role and the outcome.
 - **Personalize the opener with real signal, not tokens.** Don't default to "you're the [title] at [brand]"; a token-inserted title is not real personalization. Use the role as the hook only when it carries signal (e.g., a generalist ecommerce lead with no dedicated Amazon person, so Amazon rides on top of a full plate); otherwise open with the outcome or a researched trigger. Treat the role opener as an A/B variant, used only when research confirms the condition.
+- **Hook priority: growth momentum first, then a product drop.** Pick the opener's hook in this order: (1) **SmartScout growth momentum** (the brand's 12-month Amazon growth from internal research) — if they're scaling, lead with that trajectory, framed qualitatively ("as you scale on Amazon…") since SmartScout is an estimate you never quote as a figure; (2) a **product drop / new launch** or other timely external signal from research (release, expansion, funding, retail move); (3) the role or a category trend. Use the strongest real signal available; don't force a weak one.
 - **Seasonality, in-window only.** If research surfaces a relevant event for the brand (see `config/events-calendar.md`) and its outreach window is open (about 3 months before the peak, closing about 1 month before), anchor the opener to it and drive urgency with the closing window ("now's the window to move the numbers; by [month] it's too late to make real changes in time"). Past the close, roll to the next open event; off-window, don't force a seasonal angle.
 - **Optimize for replies and meetings, not opens.** Opens are already healthy (roughly 25-50%); the gap is open to reply to meeting, won on the body and the CTA.
 
 *(Cadence note for the calling skills, not this agent: meetings came from tight, targeted lists worked multi-channel, email + call + LinkedIn, not big email-only blasts.)*
 
 ## Structure by motion
-**cold** — Variant A (control): trigger → value prop → case-study proof. Write the full 5-touch sequence:
-- **E1 — new thread:** hyper-personalized opener on the trigger. ≤100 words.
-- **E2 — reply to E1:** value prop + the case-study stat. ≤120 words.
-- **E3 — new thread, fresh subject:** different angle (peer/competitor or category trend). ≤100 words.
-- **E4 — reply to E3:** second proof or a soft, specific nudge. ≤90 words.
-- **Breakup — reply:** "closing the loop." ≤60 words.
+**cold** — Variant A (control): trigger → value prop → case-study proof. Write the full 5-touch sequence.
+**Keep every email tight — hard cap ~70 words; shorter wins. Count the words and cut to fit.**
+- **E1 — new thread:** hyper-personalized opener on the trigger. **≤70 words.**
+- **E2 — reply to E1:** value prop + the case-study stat. **≤80 words** (the one touch allowed to run longer, for the proof).
+- **E3 — new thread, fresh subject:** different angle (peer/competitor or category trend). **≤70 words.**
+- **E4 — reply to E3:** second proof or a soft, specific nudge. **≤55 words.**
+- **Breakup — reply:** "closing the loop." **≤40 words.**
 Threading: Thread A = E1→E2; Thread B = E3→E4→breakup. E1 and E3 are new sends; the rest are replies.
 
 **closed_lost** — re-engagement. Lead by acknowledging the prior conversation, then what's changed.

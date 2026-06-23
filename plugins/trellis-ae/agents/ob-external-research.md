@@ -14,15 +14,18 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
    their products may be listed by distributors/resellers. Before concluding, also check the brand's own
    site for an Amazon link and try name variations. If you still cannot confirm, mark it **UNVERIFIED**
    ("no Amazon storefront found under [names searched]"); never assert "no Amazon presence" as a fact.
-3. **DTC site** — product lines, promotions, subscription, and growth/launch signals.
+3. **DTC site** — product lines, promotions, subscription, and especially **recent product drops / new releases**, plus other growth/launch signals.
 4. **News (last ~12 months)** — launches, funding, retail/marketplace expansion, leadership changes.
 5. **Seasonal events** — match the brand's offering against `config/events-calendar.md`; flag any event whose **outreach window is open now** (about 3 months before its peak, closing about 1 month before) so messaging can anchor timing and drive urgency.
 6. **If the company is an agency / service provider** — determine its Amazon service mix: do they **manage ad spend and/or pricing on Amazon for client brands** (ICP per `config/value-props.md`), or only **creative, content, listing/design, fulfillment/logistics, or other non-ads services** (not ICP)? Agencies that do ads/pricing **and** other services are a partial fit — flag it. If you cannot confirm they manage Amazon ads/pricing, mark it **unconfirmed**; do not assume ICP.
 
 ## Return
 - `vertical` — be specific (Supplements, Beauty, Home Décor, Food/Beverage, Apparel, Games, etc.).
-- `trigger` — the single strongest, most timely hook to open with (a launch, expansion, funding,
-  rapid growth, a new role). Prefer positive, public, recent events over "your numbers look bad."
+- `trigger` — the single strongest, most timely external hook to open with, prioritizing a **recent
+  product drop / new launch**, then expansion, funding, retail/marketplace moves, or a new role. Prefer
+  positive, public, recent events over "your numbers look bad." (Messaging leads with **SmartScout growth
+  momentum** from internal research when the brand is scaling; your trigger is the next-best hook, so
+  surface the freshest product/launch signal you can find.)
   **Tag it `[verified: source]` if you saw it on a named page that loaded, or `[hypothesis]` if you are
   inferring it** — messaging states a verified trigger as fact and poses a hypothesis as a question.
 - `linkedin_signals`, `amazon_profile`, `dtc_signals` — one line each.

@@ -15,8 +15,8 @@ The AE gives you the list one of two ways:
   paging via the Next button) and read off the members. (HubSpot's URL list-id ≠ the search API id, so
   reading the page is the reliable way.)
 - **Pasted contacts** — emails, or names + companies.
-**Always count the actual contacts and tell them the number — never assume 25.** Process the whole list;
-if it's large (40+), say so and confirm before a long run (or offer to batch it).
+**Always count the actual contacts and tell them the number — never assume a count.** Process the whole
+list (no fixed cap); if it's large, say so and confirm before a long run (or offer to batch it).
 
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (portal id, the AE's HubSpot owner id, case-study
@@ -82,7 +82,7 @@ reads the same tag for the later touches (e.g. closer-style changes E4 + the bre
   `/trellis-ae:follow-ups` (or let the scheduled check do it). Anyone who replies is auto-skipped."
 
 ## Rules
-- **Draft only — never send.** Cap 25/contacts per run. Respect RoE (step 2 is not optional).
+- **Draft only — never send.** No fixed cap; for a large list, confirm before a long run or offer to batch. Respect RoE (step 2 is not optional).
 - **All prospect-facing copy comes from `ob-messaging`, period.** Every subject and body (all five touches) is produced by the `ob-messaging` subagent — you may not write, rewrite, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from ob-messaging, it doesn't go in the draft.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.

@@ -9,7 +9,8 @@ and meetings, not writing email.
 | Skill / agent | What it does |
 |---|---|
 | `/trellis-ae:setup` | **Run once after install** — checks connectors, finds your HubSpot owner ID, saves your signature, takes the Clay webhook, writes your config |
-| `/trellis-ae:cold-outbound` | Paste ~25 cold contacts → research + RoE → Email 1 drafted in Gmail (+ follow-up plan) |
+| `/trellis-ae:qualify` | Vet a list before assigning/working it → checks email/right-person/employment/deliverability/sequence, stamps each **contact's** `icp_lead_stage` (verified / failed) + buckets revisits. The Verify stage after `icp-sourcing`. Standalone, or a pre-gate inside cold-outbound |
+| `/trellis-ae:cold-outbound` | Paste your cold list → research + RoE → Email 1 drafted in Gmail (+ follow-up plan) |
 | `/trellis-ae:closed-lost` | Re-engagement: deal-history + Fathom-first → Gmail draft; owner-aware, job-change & lost-reason driven |
 | `/trellis-ae:follow-ups` | Finds your sent Email 1's and drafts the next in-thread touch on cadence; skips anyone who replied |
 | `/trellis-ae:accountability` | Checks Email 1's are sent, follow-ups + calls are happening, replies handled → flags gaps per AE |
@@ -75,6 +76,6 @@ To check the installed version: `/plugin` → **Installed**. A Slack ping fires 
 `.github/workflows/notify-slack.yml` (requires the `SLACK_WEBHOOK_URL` repo secret).
 
 ## Status
-Built: `setup`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability`, `reporting`,
+Built: `setup`, `qualify`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability`, `reporting`,
 `create-tasks`, `ab-testing`, `sanity-check` + `contact-finder` + the 4 shared agents. `local-visits`
 is in **beta** (drafted, not fully built out). Coming: a LinkedIn agent + copywriter (see ROADMAP).

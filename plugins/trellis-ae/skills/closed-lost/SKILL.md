@@ -30,22 +30,40 @@ When the list comes as a **HubSpot list link**, open it with **Claude in Chrome*
   likely renewal.
 
 ## Per-contact pipeline
-1. **Resolve** the contact + company + the **Closed Lost deal**. Pull `closed_lost_reason`, the stage
-   reached, the close date, and the original owner.
+1. **Resolve** the contact + company + the **Closed Lost deal**. Pull the **full lost-reason picture**,
+   not just the category: `closed_lost_category` + `closed_lost_reason_1`/`_2` (the structured reason),
+   `closed_lost_reason` (the free-text *"Closed Lost Reason Comment"*), `closed_lost_reason_comment_product`
+   (the product/feature gap that lost it), and `closed_lost_reason_comment_competitor` + `who_we_lost_to`
+   (if they went elsewhere). Also pull the **close date** — this is **when we last spoke**, the anchor for
+   the "what's new since" cross-reference — plus the stage reached and the most-recent deal owner.
 2. **RoE** — spawn `ob-verification` (motion `closed_lost`): it surfaces the owner (flag, don't block),
    and **does block** on a new open deal, recent reply/meeting/call, customer/won, or opt-out. Then
    apply the eligibility filter; drop hard-excludes and anything still in the 3-month cool-off.
 3. **Research** — spawn `ob-internal-research` (motion `closed_lost`: deal history + **Fathom objection
    calls first**) and `ob-external-research` (what's changed on their side) in parallel.
-4. **Message** — read the **lost reason** (`closed_lost_reason`) and whether they signed with a
-   competitor, pick the value prop + a verified case study (live from Drive/Notion, metric verbatim),
-   then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `closed_lost`) with all of that. It tailors the
-   re-engagement angle to why they passed (price → new ROI; missing feature → "we built it"; timing →
-   "is now better?"; no bandwidth → fully-managed; **competitor-signed → a check-in tone, not a pitch**),
-   leads from the prior conversation, and writes the same **5-touch sequence sent as the most recent deal owner** (the rep who actually met with them — not necessarily the contact owner; if that owner is an inactive user, flag for reassignment to a live rep).
-   *(The angle logic + voice live in `ob-messaging` — one place to tune.)*
-5. **Draft Email 1 in Gmail** — use ob-messaging's E1 subject + body **verbatim** (append only the signature). **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (top of the agent) for the `closed_lost` motion; if any fail, send it back to redo — don't fix it yourself.** Then `create_draft` (to the prospect; never send). Capture the draft id.
-6. **Calling note + follow-up plan** (same mechanism as cold):
+4. **What's new since they passed** — read **`config/whats-new.md`** and pick the Trellis release(s)
+   **dated after the deal's close date** (when we last spoke), preferring the one that answers their lost
+   reason (especially the product/feature gap in `closed_lost_reason_comment_product`). If nothing
+   postdates the close date, there's no "new since" angle — fall back to what's changed on their side +
+   "how did it go." Never use a release that isn't in `whats-new.md` or that predates the conversation.
+5. **Message** — hand `ob-messaging` the full angle inputs: the **full lost reason** (category +
+   reason_1/2 + the free-text comment + product/competitor comments), whether they signed with a
+   competitor, the **"what's new since" release** (or none) from step 4, plus the value prop + a verified
+   case study (live from Drive/Notion, metric verbatim). You **MUST** spawn the **`ob-messaging`**
+   subagent (Task tool, `subagent_type: ob-messaging`; motion `closed_lost`). It tailors the re-engagement
+   angle to why they passed (price → new ROI; **missing feature → name the actual release from
+   `whats-new.md` that closes that gap**; timing → "is now better?"; no bandwidth → fully-managed;
+   **competitor-signed → a check-in tone, not a pitch**), leads from the prior conversation, and writes the
+   same **5-touch sequence sent as the most recent deal owner** (the rep who met them; if that owner is an
+   inactive user, flag for reassignment to a live rep). *(Angle logic + voice live in `ob-messaging`.)*
+6. **Preview, then draft Email 1 in Gmail.** First **show the AE, in chat, the chosen angle + E1
+   (subject + body)** — including which lost reason and which "what's new" release it leans on — so they
+   can sign off **before anything lands in Gmail**. (For a large batch, preview a representative sample +
+   the angle logic rather than making them approve all 25 one by one.) On the AE's OK: use ob-messaging's
+   E1 **verbatim** (append only the signature); **first gate it against `ob-messaging`'s HARD CONSTRAINTS
+   for the `closed_lost` motion — if any fail, send it back to redo, don't fix it yourself.** Then
+   `create_draft` (to the prospect; never send). Capture the draft id.
+7. **Calling note + follow-up plan** (same mechanism as cold):
    - **Calling note** (contact-level, 3 bullets, power-dialing): two pain points, then one historical
      bullet = **the lost reason + when** (e.g. "lost on price, demo 11/24" or "signed w/ <competitor>
      Q1'25 — checking in").
@@ -66,5 +84,6 @@ When the list comes as a **HubSpot list link**, open it with **Claude in Chrome*
 - **All prospect-facing copy comes from `ob-messaging`, used verbatim** — never write or rewrite it yourself; gate every draft against ob-messaging's HARD CONSTRAINTS first.
 - Respect the 3-month cool-off and hard-excludes. Competitor-signed → check-in, not a pitch.
 - Never fabricate the prior conversation — pull it from HubSpot/Fathom; if there's no record, say so
-  and keep it light ("wanted to reconnect").
+  and keep it light ("wanted to reconnect"). **Same for "what's new": cite a Trellis release only if it's
+  in `config/whats-new.md` AND postdates the last contact — never invent "we shipped X."**
 - Cap 25; respect RoE (flag owner, block on active motion / opt-out).

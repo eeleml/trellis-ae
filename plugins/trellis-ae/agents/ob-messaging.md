@@ -24,7 +24,7 @@ calling skill does those). Never fabricate facts, metrics, or prior conversation
 - Contact (name, title, company) and the **motion**: `cold`, `closed_lost`, `local`, or `follow_up`.
 - The research bundle (internal context + the external trigger/vertical) and the **chosen value prop**.
 - A **case study** with a verified metric — use it **VERBATIM**; never invent or re-round numbers.
-- For `closed_lost`: the **lost reason** and whether they signed with a competitor.
+- For `closed_lost`: the **full lost reason** (category + the free-text comment + the product/competitor comments), whether they signed with a competitor, and **what's new at Trellis since the last contact** (the dated release(s) from `config/whats-new.md`, or none). Cite a release ONLY if it was passed to you — never invent one.
 - For `follow_up`: which touch (E2/E3/E4/breakup), the prior thread text, and the plan's angle.
 - For `local`: the city / area and the visit timing (specific dates or a rough window), if known.
 
@@ -143,12 +143,18 @@ Our one consistent meeting-booker was a short, role-aware, outcome-led opener wi
 - **Breakup — reply:** "closing the loop." **≤40 words.**
 Threading: Thread A = E1→E2; Thread B = E3→E4→breakup. E1 and E3 are new sends; the rest are replies.
 
-**closed_lost** — re-engagement. Lead by acknowledging the prior conversation, then what's changed.
-**Tailor the angle to the lost reason:** price → new pricing/ROI; missing feature → "we built that
-since"; bad timing → "is now a better moment?"; no bandwidth → fully-managed. **Signed with a
-competitor → a check-in tone, not a pitch** ("saw you went with X — how's it going?"), planting the
-flag for their renewal. Same 5-touch structure as cold; written **as the most recent deal owner (the rep who met them)** so it reads
-as a continuation. **Job change = a top hook:** if research shows they've moved companies since you last spoke, lead with it ("we talked when you were at [Old Co] — saw you're now at [New Co]"); a champion who moved often opens the door at the new company.
+**closed_lost** — re-engagement. Lead by acknowledging the prior conversation in one line, then go to
+**what's changed** — on THEIR side (a researched trigger) and/or **what Trellis shipped since you last
+spoke** (the dated release the calling skill passes from `config/whats-new.md`). **Tailor the angle to the
+lost reason:** price → new pricing/ROI; **missing feature → name the actual release that closes that gap**
+("since we talked we shipped X, so you can [the thing they needed]") — cite ONLY a release the skill
+passed you (it's real and postdates the last contact); if none was passed, don't claim "we built X," just
+lead with what's changed on their side; bad timing → "is now a better moment?"; no bandwidth →
+fully-managed. **Signed with a competitor → a check-in tone, not a pitch** ("saw you went with X — how's
+it going?"), planting the flag for their renewal. Same 5-touch structure as cold; written **as the most
+recent deal owner (the rep who met them)** so it reads as a continuation. **Job change = a top hook:** if
+research shows they've moved companies since you last spoke, lead with it ("we talked when you were at
+[Old Co] — saw you're now at [New Co]"); a champion who moved often opens the door at the new company.
 
 **Never be passive-aggressive about the gap.** Don't relitigate that things went quiet, and never self-blame ("it went quiet on my end," "my fault," "I dropped the ball") or guilt them ("you went dark," "haven't heard back from you"). Pick it back up forward-looking: acknowledge the prior conversation in one line, then go straight to a concrete, current reason to reconnect.
 

@@ -11,7 +11,7 @@ and meetings, not writing email.
 | `/trellis-ae:setup` | **Run once after install** — checks connectors, finds your HubSpot owner ID, saves your signature, takes the Clay webhook, writes your config |
 | `/trellis-ae:qualify` | Vet a list before assigning/working it → checks email/right-person/employment/deliverability/sequence, stamps each **contact's** `icp_lead_stage` (verified / failed) + buckets revisits. The Verify stage after `icp-sourcing`. Standalone, or a pre-gate inside cold-outbound |
 | `/trellis-ae:cold-outbound` | Paste your cold list → research + RoE → Email 1 drafted in Gmail (+ follow-up plan) |
-| `/trellis-ae:closed-lost` | Re-engagement: deal-history + Fathom-first → Gmail draft; owner-aware, job-change & lost-reason driven |
+| `/trellis-ae:closed-lost` | Re-engagement: deal-history + Fathom-first → Gmail draft; owner-aware, job-change & lost-reason driven. Reads the **full** lost reason + cross-references **`config/whats-new.md`** (releases since you last spoke); previews the angle + E1 in chat before drafting |
 | `/trellis-ae:follow-ups` | Finds your sent Email 1's and drafts the next in-thread touch on cadence; skips anyone who replied |
 | `/trellis-ae:accountability` | Checks Email 1's are sent, follow-ups + calls are happening, replies handled → flags gaps per AE |
 | `/trellis-ae:reporting` | **Your morning briefing** — replies waiting, yesterday's emails/calls + outcomes, cadence health, what worked, and how many call tasks to line up today (read-only) |

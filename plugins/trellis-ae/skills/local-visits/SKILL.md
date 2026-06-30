@@ -20,8 +20,13 @@ Before processing, get two things so the lunch invite and the task dates are con
 
 ## Input
 The AE gives the list one of two ways:
-- **A HubSpot list link** — open it with **Claude in Chrome** (`navigate` + `get_page_text`, paging
-  through) and read off the members.
+- **A HubSpot list link** — **read its members via the HubSpot Lists v3 REST API** (reliable; not the
+  browser, not SQL): with the token (`~/.hubspot-token`),
+  `GET /crm/v3/lists/<id>/memberships/join-order?limit=250&after=…` (`<id>` = the number in the URL
+  `.../objectLists/<id>`; page via `after`, then batch-read properties via the MCP). **Don't use the
+  `hs_crm_search.ilsListIds` SQL filter — it returns a capped, broad set** (see the `assigner` gotcha).
+  Only if no token is set, fall back to **Claude in Chrome** (`navigate` + `get_page_text`), which caps at
+  a virtualized table's rendered rows.
 - **Pasted contacts** — names + companies (+ city if they have it).
 **Count the actual contacts and report the number.** In-person is lower-volume than email, but you still
 don't need a smaller batch — process the whole list in capped waves (see **Pace & walk-away**); outputs

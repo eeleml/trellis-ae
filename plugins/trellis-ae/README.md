@@ -35,7 +35,7 @@ Then **turn on auto-update** so you stay current automatically: `/plugin` → **
 ## One-time setup (per AE)
 1. **Install** (the two commands above).
 2. **Connect these connectors** in Claude → Settings → Connectors:
-   - **HubSpot · Gmail · Fathom · Google Drive · Claude in Chrome** — all required (Chrome reads the HubSpot list links you paste).
+   - **HubSpot · Gmail · Fathom · Google Drive** — required. **List links are read (and built) via the HubSpot Lists v3 REST API using a private-app token** at `~/.hubspot-token` — set this up; it's how the skills get the *true* list membership (the MCP's `ilsListIds` SQL filter is unreliable, and a degraded browser caps at the rendered rows). **Claude in Chrome** is an optional fallback for reading a list link when no token is set.
    - **Slack** — only if you'll run `accountability` or want reply alerts.
 3. **Run `/trellis-ae:setup`** — it verifies your connectors, finds your HubSpot owner ID, saves your signature, has you paste the team **Clay webhook** (get it from your admin), locates the case-study index in Drive, and writes `~/.trellis-ae/config.json`.
 4. **Schedule** via `/schedule`: follow-ups at 6 AM weekdays (and `accountability` weekly if you run it).

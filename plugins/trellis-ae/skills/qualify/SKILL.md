@@ -15,9 +15,16 @@ employment. You do NOT write outreach, you do NOT assign or enroll, and you **ne
 before the AE confirms.** Never fabricate an email, phone, or employment fact.
 
 ## Intake — ask two things first
-1. **List source** — either a **HubSpot list link** (open with **Claude in Chrome**: `navigate` +
-   `get_page_text`, paging via Next; **count the actual contacts and report the number — never assume**)
-   or **pasted contacts** (emails, or names + companies).
+1. **List source** — either a **HubSpot list link** or **pasted contacts** (emails, or names + companies).
+   For a list link, **read its members via the HubSpot Lists v3 REST API** (reliable; not the browser, not
+   the SQL filter): with the token (`~/.hubspot-token` / config `hubspot_token`),
+   `GET /crm/v3/lists/<id>/memberships/join-order?limit=250&after=…` where `<id>` is the number in the URL
+   (`.../objectLists/<id>`) — page via `after`, take the returned `total` + record-ids, then batch-read
+   those ids' properties via the MCP (`get_crm_objects`, ~100 at a time). **Do NOT use `query_crm_data`'s
+   `hs_crm_search.ilsListIds` filter — it returns a capped, broad set, not the real list** (see the
+   `assigner` skill's gotcha). Only if no token is set, fall back to **Claude in Chrome** (`navigate` +
+   `get_page_text`), which silently caps at a virtualized table's rendered rows. Either way, **count the
+   real members and report the number — never assume.**
 2. **Mode** — **general list** (no AE assigned yet → skip owner Rules-of-Engagement, just note any
    current owner and surface an open deal as a flag) or **for a specific AE** (→ run RoE for that AE and
    flag conflicts). Ask which; default to general if they don't say.
@@ -28,8 +35,9 @@ offer to batch it in chunks.
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (portal id, the running AE's owner id, Clay webhook
   pointers). If absent, point them at `config/config.example.json`.
-- Connected MCPs: **HubSpot** (records, properties, deals, sequence + owner fields), **Claude in Chrome**
-  (HubSpot list links). For employment, spawn the **`ob-external-research`** subagent (Task tool,
+- Connected **HubSpot** MCP (records, properties, deals, sequence + owner fields). **List links are read
+  via the HubSpot Lists v3 REST API (curl + the `~/.hubspot-token` token)** — the MCP has no list tools and
+  its `ilsListIds` SQL filter is unreliable; **Claude in Chrome** is only the fallback if no token is set. For employment, spawn the **`ob-external-research`** subagent (Task tool,
   `subagent_type: ob-external-research`; it takes **no** motion). For RoE, spawn the **`ob-verification`**
   subagent (Task tool, `subagent_type: ob-verification`; **motion `qualify`** — flags, never blocks).
   Missing `clay_mobile` is filled via the **Clay phone webhook** (curl, same pattern as `contact-finder`).

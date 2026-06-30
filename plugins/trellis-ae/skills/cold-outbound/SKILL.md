@@ -11,9 +11,14 @@ anything; you draft. Keep the AE's time in chat minimal: do the work, then hand 
 
 ## Input
 The AE gives you the list one of two ways:
-- **A HubSpot list link** — open it with **Claude in Chrome** (`navigate` to the URL + `get_page_text`,
-  paging via the Next button) and read off the members. (HubSpot's URL list-id ≠ the search API id, so
-  reading the page is the reliable way.)
+- **A HubSpot list link** — **read its members via the HubSpot Lists v3 REST API** (reliable; not the
+  browser, not the SQL filter): with the token (`~/.hubspot-token`),
+  `GET /crm/v3/lists/<id>/memberships/join-order?limit=250&after=…` (`<id>` = the number in the URL
+  `.../objectLists/<id>`; page via `after`; use the returned `total` + record-ids, then batch-read
+  properties via the MCP). **Do NOT use `query_crm_data`'s `hs_crm_search.ilsListIds` filter — it returns a
+  capped, broad set, not the real list** (see the `assigner` gotcha). Only if no token is set, fall back to
+  **Claude in Chrome** (`navigate` + `get_page_text`), which silently caps at the rendered rows of a
+  virtualized table.
 - **Pasted contacts** — emails, or names + companies.
 **Always count the actual contacts and tell them the number — never assume a count.** Process the whole
 list — the AE does NOT need to hand you a smaller batch. It runs in capped concurrency waves (see

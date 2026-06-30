@@ -18,7 +18,7 @@ never send.
   matching the ask, apply the eligibility filter, then follow RoE — **flag the existing owner**, but
   it's fair game as long as RoE is otherwise clear. Report owners so routing can be confirmed.
 
-When the list comes as a **HubSpot list link**, open it with **Claude in Chrome** (`navigate` + `get_page_text`, paging through) to read the members. **Count the actual contacts and report the number — never assume 25.** Process the whole list — no smaller batch needed; it runs in capped waves (see **Pace & walk-away**) and drafts land in Gmail for later review. For a large list, just give the time estimate up front.
+When the list comes as a **HubSpot list link**, **read its members via the HubSpot Lists v3 REST API** (reliable; not the browser, not the SQL filter): with the token (`~/.hubspot-token`), `GET /crm/v3/lists/<id>/memberships/join-order?limit=250&after=…` (`<id>` = the number in the URL `.../objectLists/<id>`; page via `after`; use the returned `total` + record-ids, then batch-read properties via the MCP). **Do NOT use `query_crm_data`'s `hs_crm_search.ilsListIds` filter — it returns a capped, broad set, not the real list** (see the `assigner` gotcha). Only if no token is set, fall back to **Claude in Chrome** (`navigate` + `get_page_text`), which silently caps at the rendered rows of a virtualized table. **Count the actual contacts and report the number — never assume 25.** Process the whole list — no smaller batch needed; it runs in capped waves (see **Pace & walk-away**) and drafts land in Gmail for later review. For a large list, just give the time estimate up front.
 
 ## Eligibility (who's in-bounds)
 - **≥ 3-month cool-off** since the deal closed lost — an RoE/ownership rule; don't re-poke a fresh

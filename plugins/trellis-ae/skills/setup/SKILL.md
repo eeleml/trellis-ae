@@ -16,7 +16,7 @@ missing, tell them to enable it in Claude → Settings → Connectors — **you 
 - **Gmail** (required) — `list_labels` or `list_drafts`.
 - **Fathom** (required) — `get_identity` or `list_meetings`.
 - **Google Drive** (required, for case studies) — `list_recent_files`.
-- **Claude in Chrome** (required — to read the HubSpot list links the AE pastes) — `list_connected_browsers`.
+- **Claude in Chrome** (optional — only a fallback for reading a HubSpot list link if the token below isn't set) — `list_connected_browsers`.
 - **Slack** (only if they'll run `accountability` or want reply alerts) — `slack_search_channels`.
 If a required one is missing, gather what you can, tell them to connect it, and have them re-run setup.
 
@@ -37,7 +37,17 @@ note it and tell them to get the link from the admin.
 Ask them to paste the team Clay webhook (pinned in Slack / from the admin). Save it WITHOUT echoing it:
 `printf '%s' "PASTED_URL" > ~/.clay-webhook`. Never print it back.
 
-## 6. Write the config
+## 6. HubSpot list token (reads list links)
+The read-skills read HubSpot list links via the Lists v3 REST API, which needs a private-app token (the
+MCP can't read list membership reliably). Ask them to paste the **read-only list token their admin shares**
+(pinned in Slack / a password manager — NOT one they create themselves). Save it WITHOUT echoing it:
+`printf '%s' "PASTED_TOKEN" > ~/.hubspot-token`. Then confirm it authenticates, without printing it:
+`curl -s -o /dev/null -w '%{http_code}' -X POST https://api.hubapi.com/crm/v3/lists/search -H "Authorization: Bearer $(cat ~/.hubspot-token)" -H 'Content-Type: application/json' -d '{"count":1}'`
+— **200** = good · **401** = wrong/expired token · **403** = missing the `crm.lists.read` scope. Report
+✅/❌, never the token. *(If `~/.hubspot-token` isn't set, the skills fall back to Claude in Chrome, which
+caps at the rendered rows — so the token is strongly preferred. Admins who run `assigner` use a read+write token.)*
+
+## 7. Write the config
 Create `~/.trellis-ae/` if needed and write `~/.trellis-ae/config.json`:
 ```json
 {
@@ -50,12 +60,12 @@ Create `~/.trellis-ae/` if needed and write `~/.trellis-ae/config.json`:
 }
 ```
 
-## 7. Schedule + first run
+## 8. Schedule + first run
 - Have them set the recurring jobs via `/schedule`: **follow-ups at 6 AM weekdays** (and **accountability**
   weekly if they run it).
 - Confirm they're ready and suggest a first run: "`/trellis-ae:cold-outbound`, then paste ~25 contacts."
 
 ## Rules
-- Never print the Clay webhook or any secret. Resolve portal/owner IDs at runtime — never hardcode them.
+- Never print the Clay webhook, the HubSpot token, or any secret. Resolve portal/owner IDs at runtime — never hardcode them.
 - If a required connector is missing, guide them to enable it; you can't do it for them.
 - Confirm each resolved value with the AE before writing the config.

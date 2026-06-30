@@ -34,7 +34,8 @@ the HubSpot record owner. Leave `hubspot_owner_id` alone unless the user explici
   If absent, point at `config/config.example.json`.
 - Connected **HubSpot** MCP (records, properties, owners). List create / membership / read go through the
   **HubSpot Lists v3 REST API via curl** with the token (the MCP has no list-management tools). Load tools
-  via ToolSearch as needed.
+  via ToolSearch as needed. **Create + add-members need a `crm.lists.write`-scoped token (the admin's); a
+  read-only list token can read membership but not build — so running `assigner` is an admin task.**
 
 ## The two phases
 

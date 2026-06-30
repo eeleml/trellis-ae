@@ -23,8 +23,9 @@ The AE gives the list one of two ways:
 - **A HubSpot list link** — open it with **Claude in Chrome** (`navigate` + `get_page_text`, paging
   through) and read off the members.
 - **Pasted contacts** — names + companies (+ city if they have it).
-**Count the actual contacts and report the number.** In-person is lower-volume than email — if the list
-is large (15+), say so and confirm before a long run, or offer to batch it by area.
+**Count the actual contacts and report the number.** In-person is lower-volume than email, but you still
+don't need a smaller batch — process the whole list in capped waves (see **Pace & walk-away**); outputs
+(texts, the lunch-invite draft, visit tasks) are all for later review. For a large list, give the estimate up front.
 
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (the AE's HubSpot owner id, signature, case-study index
@@ -32,7 +33,14 @@ is large (15+), say so and confirm before a long run, or offer to batch it by ar
 - Connected MCPs: **HubSpot** (records / RoE / the visit task), **Gmail** (the lunch-invite draft),
   **Fathom** (any prior call), and **Drive/Notion** (case studies). Load tools via ToolSearch as needed.
 
-## Per-contact pipeline (run contacts concurrently where you can)
+## Pace & walk-away (don't make the AE babysit)
+Nothing is sent — texts, the lunch invite, and visit tasks are all drafts/tasks for later — so the AE
+needn't watch the run. Tell them up front: the count, a rough estimate, and "you don't need to watch this
+— I'll prep everything and summarize when done." Then run **at most 4 contacts concurrently**, starting
+the next as each finishes, so a big list doesn't spike the rate limit and stall on retries. Keep a running
+tally; if throttled, let it back off and continue rather than shrinking the list. The AE can override the wave size.
+
+## Per-contact pipeline (run in capped waves; see Pace & walk-away above)
 1. **Resolve** the contact + company in HubSpot. Pull the SmartScout fields and any location / HQ on the
    company record.
 2. **Rules of Engagement** — spawn the `ob-verification` subagent (motion `local`, requesting AE from

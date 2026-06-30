@@ -16,7 +16,9 @@ The AE gives you the list one of two ways:
   reading the page is the reliable way.)
 - **Pasted contacts** — emails, or names + companies.
 **Always count the actual contacts and tell them the number — never assume a count.** Process the whole
-list (no fixed cap); if it's large, say so and confirm before a long run (or offer to batch it).
+list — the AE does NOT need to hand you a smaller batch. It runs in capped concurrency waves (see
+**Pace & walk-away**) and drafts land in Gmail for later review, so a big list is fine; just give the
+time estimate up front.
 
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (portal id, the AE's HubSpot owner id, case-study
@@ -44,7 +46,21 @@ Once they pick a test (1–3): for each cleared contact, assign an **arm** by a 
 reads the same tag for the later touches (e.g. closer-style changes E4 + the breakup). A contact is in
 **one** experiment at a time — if it's already tagged into a running one, leave it.
 
-## Steps (per contact — run contacts concurrently where you can)
+## Pace & walk-away (don't make the AE babysit)
+This is draft-only — nothing is sent — so the AE never needs to watch the run. Work unattended:
+- **Set expectations once, before you start:** the contact count, a rough estimate (~1 min/contact), and
+  "you don't need to watch this — I'll draft each Email 1 into your Gmail and summarize when it's done;
+  come back and review then."
+- **Run in capped waves.** Process at most **4 contacts concurrently**, starting the next as each finishes.
+  Same list, just metered so a big run doesn't spike the rate limit and stall on retries. Do **not** fan
+  out the whole list at once.
+- **Keep a running tally** as waves complete (e.g. "12/30 — 9 drafted, 3 flagged") so the AE sees progress
+  when they check back; don't narrate every tool call.
+- **Throttling is self-correcting.** If you still hit a rate limit, let it back off and continue — don't
+  shrink the list. Only drop to a smaller wave (2) if it's *persistently* throttled.
+- The AE can override: "run it all at once" (fastest, higher throttle risk) or name a different wave size.
+
+## Steps (per contact — run in capped waves; see Pace & walk-away above)
 1. **Resolve** the contact in HubSpot (by email; else search name + company). Get the contact, the
    associated company, and the SmartScout fields on the company record.
 2. **Rules of Engagement** — spawn the `ob-verification` subagent (motion: `cold`, requesting AE
@@ -82,7 +98,7 @@ reads the same tag for the later touches (e.g. closer-style changes E4 + the bre
   `/trellis-ae:follow-ups` (or let the scheduled check do it). Anyone who replies is auto-skipped."
 
 ## Rules
-- **Draft only — never send.** No fixed cap; for a large list, confirm before a long run or offer to batch. Respect RoE (step 2 is not optional).
+- **Draft only — never send.** No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
 - **All prospect-facing copy comes from `ob-messaging`, period.** Every subject and body (all five touches) is produced by the `ob-messaging` subagent — you may not write, rewrite, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from ob-messaging, it doesn't go in the draft.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.

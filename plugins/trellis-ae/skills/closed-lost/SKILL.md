@@ -18,7 +18,7 @@ never send.
   matching the ask, apply the eligibility filter, then follow RoE — **flag the existing owner**, but
   it's fair game as long as RoE is otherwise clear. Report owners so routing can be confirmed.
 
-When the list comes as a **HubSpot list link**, open it with **Claude in Chrome** (`navigate` + `get_page_text`, paging through) to read the members. **Count the actual contacts and report the number — never assume 25.** Process the whole list; for large lists (40+), confirm before a long run or offer to batch.
+When the list comes as a **HubSpot list link**, open it with **Claude in Chrome** (`navigate` + `get_page_text`, paging through) to read the members. **Count the actual contacts and report the number — never assume 25.** Process the whole list — no smaller batch needed; it runs in capped waves (see **Pace & walk-away**) and drafts land in Gmail for later review. For a large list, just give the time estimate up front.
 
 ## Eligibility (who's in-bounds)
 - **≥ 3-month cool-off** since the deal closed lost — an RoE/ownership rule; don't re-poke a fresh
@@ -29,7 +29,14 @@ When the list comes as a **HubSpot list link**, open it with **Claude in Chrome*
   the timing of their signing is knowable (notes / Fathom / research), time the outreach toward their
   likely renewal.
 
-## Per-contact pipeline
+## Pace & walk-away (don't make the AE babysit)
+Draft-only — nothing is sent — so the AE never needs to watch the run. Tell them up front: the count, a
+rough estimate, and "you don't need to watch this — I'll draft into your Gmail and summarize when done."
+Then run **at most 4 contacts concurrently**, starting the next as each finishes — same list, just metered
+so a big run doesn't spike the rate limit and stall on retries. Keep a running tally as waves complete; if
+throttled, let it back off and continue rather than shrinking the list. The AE can override the wave size.
+
+## Per-contact pipeline (run in capped waves; see Pace & walk-away above)
 1. **Resolve** the contact + company + the **Closed Lost deal**. Pull the **full lost-reason picture**,
    not just the category: `closed_lost_category` + `closed_lost_reason_1`/`_2` (the structured reason),
    `closed_lost_reason` (the free-text *"Closed Lost Reason Comment"*), `closed_lost_reason_comment_product`

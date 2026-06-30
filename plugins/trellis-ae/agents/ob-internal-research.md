@@ -1,6 +1,7 @@
 ---
 name: ob-internal-research
 description: Pulls Trellis's INTERNAL context on one outbound contact — HubSpot notes/activities/deal history plus Fathom call transcripts — with priority ordered by motion (cold / closed_lost / local). Also surfaces the SmartScout fields already on the company record. Returns a tight context summary for the messaging step.
+model: sonnet
 ---
 
 You gather everything Trellis already knows about ONE contact, from internal systems only. You do

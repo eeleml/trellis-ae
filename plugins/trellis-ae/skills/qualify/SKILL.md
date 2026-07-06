@@ -84,20 +84,34 @@ offer to batch it in chunks.
      **FLAG** to eyeball (NOT a fail — Amazon sellers often use a personal address). With **multiple**
      associated companies, compare against **all** their domains; only flag if it matches none.
    - Email domain (or the `company` field) points to a **different, identifiable company** than the
-     associated company record → the record is stale somewhere. **Don't auto-fail** — resolve it in step 4
+     associated company record → the record is stale somewhere. **Don't auto-fail** — resolve it in step 5
      via LinkedIn: decide whether the **email is old** (they changed companies) or the **company
      name/association is old or wrong** (often a stale association, or a brand-vs-parent-entity domain),
      then **confirm with the AE and re-associate the contact to the correct company.**
    - **No associated company** → **FLAG** ("no associated company" — itself a data-quality signal) and
      skip the domain-match comparison.
 
-3. **Deliverability — can't email → `failed_enrollment`:** any of `hs_email_optout = true`,
+3. **ICP role fit (job title) — a non-fit role → `failed_verification`:** the `jobtitle` should be a
+   plausible ecommerce / marketplace / brand decision-maker or influencer. Some roles are a **hard
+   non-ICP fit no matter how good the company is** — **flag them and fail** (`failed_verification`, note
+   "non-ICP role"):
+   - **Field marketing** — event / regional / field roles (e.g. "Field Marketing Manager / Specialist /
+     Director," "Field Marketer"). Not an ecommerce/Amazon role.
+   - **Alcohol / drinking-related** — beer, wine, spirits, brewing / brewery, distillery, liquor,
+     cocktail, cider, hard seltzer, sommelier (e.g. "Beer Innovation," "Wine &amp; Spirits Division," "Beer
+     Division"). Alcohol isn't an Amazon-seller motion.
+   - **Title ≠ company — it's the ROLE that's out, not the account.** A fine-ICP company can employ
+     out-of-scope people: keep the company, fail the person (e.g. Constellation Brands stays as an
+     account, but its beer / wine / spirits marketers fail). Match on the title; when genuinely unsure,
+     **FLAG** for the AE instead of silently failing. **Add new non-fit role patterns here as they surface.**
+
+4. **Deliverability — can't email → `failed_enrollment`:** any of `hs_email_optout = true`,
    a prior hard bounce (`hs_email_hard_bounce_reason_enum` set, or `hs_email_bounce > 0`),
    `hs_email_quarantined = true`, or `hs_email_bad_address = true` (invalid). (This is the usual cause of
    "not receiving but not visibly unsubscribed.") **Ignore `hs_marketable_status`** — it's HubSpot
    marketing-billing/eligibility, not 1:1 Gmail deliverability, so it does not gate sends here.
 
-4. **Employment valid + resolve any company mismatch:** spawn the **`ob-external-research`** subagent
+5. **Employment valid + resolve any company mismatch:** spawn the **`ob-external-research`** subagent
    scoped to *"is &lt;name&gt;, &lt;jobtitle&gt;, still at &lt;company&gt;? what is their current employer?"*
    - **Left the company entirely** → `failed_verification` + note **"needs replacement contact"** (feeds
      the net-new finder).
@@ -109,13 +123,13 @@ offer to batch it in chunks.
    - **Can't be confirmed** — not found, tool error, empty, or no network — → **FLAG** "employment
      unconfirmed." Never fail on absence of evidence; only a positive "they left" is a fail.
 
-5. **`clay_mobile`** (never a gate on the stage): present → fine. Missing → fire the **Clay phone
+6. **`clay_mobile`** (never a gate on the stage): present → fine. Missing → fire the **Clay phone
    webhook** (curl), then inline-poll up to **~2 min**; if still empty, record a soft note "phone enrich
    pending" and **move on** — a still-empty or hung phone never blocks Verified and never stalls the batch.
    (Most lists arrive pre-enriched; this only fills gaps. The mobile lands in `clay_mobile`, never
    `phone`/`mobilephone`.)
 
-6. **Already-worked signals (Revisit / flag):**
+7. **Already-worked signals (Revisit / flag):**
    - `hs_sequences_is_enrolled = true` — in **any** sequence, *if otherwise clean* → **Revisit** (hold;
      resurface after `hs_latest_sequence_ended_date`). A contact that ALSO fails deliverability/
      verification still fails first (see precedence).
@@ -123,13 +137,13 @@ offer to batch it in chunks.
      2 months** → **Revisit** (too fresh to re-poke); **2–6 months** ago → **FLAG**, bring up to the
      prompter. A closed deal with a **missing/unparseable `closedate`** → **FLAG** ("closed deal, date
      unknown") — never a silent Go.
-   - An **open** deal → in *for-a-specific-AE* mode it's an RoE flag (step 7); in **general** mode flag it
+   - An **open** deal → in *for-a-specific-AE* mode it's an RoE flag (step 8); in **general** mode flag it
      directly ("open deal, &lt;stage&gt;"). Either way it surfaces, never silently passes.
    - **Active lifecycle** (`customer`, Meeting Booked `51311693`, SQL, Opportunity) → **FLAG in any mode**
      ("already in motion, not a cold prospect") so it gets pulled from a cold list. (`customer` is also an
      RoE hard stop.) This is the signal a "cold" list secretly contains live accounts.
 
-7. **Rules of Engagement — only in "for a specific AE" mode:** spawn the **`ob-verification`** subagent
+8. **Rules of Engagement — only in "for a specific AE" mode:** spawn the **`ob-verification`** subagent
    (Task tool, `subagent_type: ob-verification`; **motion `qualify`**, requesting AE from intake). The
    `qualify` motion surfaces owner / open-deal / replied / meeting / recent-call / competing-outreach as
    **flags** (never auto-fails); it is hard NOT clear only on opt-out / out-of-business / dead stage. In
@@ -138,8 +152,9 @@ offer to batch it in chunks.
 ## Verdict (precedence: fail → revisit → flag → go)
 Resolve in this order; the first that matches wins the bucket:
 1. **`failed_enrollment`** — opted out / hard bounce / quarantined / invalid address.
-2. **`failed_verification`** — no email, role-based mailbox, left the company, or email at a different
-   current company. (A confirmed dead stage from RoE also lands here.)
+2. **`failed_verification`** — no email, role-based mailbox, **non-ICP role by job title (field
+   marketing, alcohol / drinking, etc.),** left the company, or email at a different current company.
+   (A confirmed dead stage from RoE also lands here.)
 3. **Revisit** — otherwise clean, but in any sequence, or a closed deal &lt; 2 months. Don't fail; hold.
 4. **Verified (Go)** — passes all of the above. **`clay_mobile` is NOT required** — a pending/empty phone
    is a note, not a gate. Any **soft flags** (free-mail / domain mismatch, no associated company,

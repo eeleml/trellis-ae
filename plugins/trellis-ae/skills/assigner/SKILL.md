@@ -49,8 +49,10 @@ Apply the chosen precedence (default **company-first**):
   owner** is one of the AEs → assign to that AE (fallback). Else → **hold** for Phase B / exclusion.
 - **contact-first:** swap the order (contact owner wins, company owner is the fallback).
 
-**Hard rule — never poach:** if the governing owner is an **active rep who is NOT in the AE set**, do
-**not** assign that contact (hold it out entirely). Surface these as "held — owned by &lt;rep&gt;."
+**Hard rule — never poach:** if the governing owner is a **confirmed-active rep who is NOT in the AE set**
+(resolved via `search_owners` with `isActive=true`), do **not** assign that contact (hold it out entirely).
+Surface these as "held — owned by &lt;rep&gt;." **An empty, shared, deactivated, or unresolvable owner is
+NOT a poach block** — only a confirmed-active outsider is (see the archived-owner gotcha below).
 
 Because company owner is a property of the **company**, every contact at the same account shares the same
 company owner, so accounts never split in Phase A.
@@ -58,9 +60,10 @@ company owner, so accounts never split in Phase A.
 ### Phase B — distribute the leftover evenly (accounts stay whole)
 The leftover = contacts not claimed in Phase A. **Scope** (default): include contacts with **no company
 owner** *and* contacts whose company owner is a **deactivated/removed** user (orphans — check
-`isActive=false` via `search_owners`); **exclude** contacts at companies owned by an **active** rep outside
-the set (those are live territory). Offer the stricter "only truly unowned" or looser "all leftover" if
-they prefer.
+`isActive=false` via `search_owners`; **an owner id that won't resolve is a departed rep — treat it as an
+orphan, not as territory**, see the archived-owner gotcha); **exclude** contacts at companies owned by a
+**confirmed-active** rep outside the set (those are live territory). Offer the stricter "only truly
+unowned" or looser "all leftover" if they prefer.
 
 Then distribute, **keeping every contact at the same account with the same AE**:
 1. Group leftover contacts by **primary company** (the account).
@@ -107,6 +110,17 @@ On confirmation, for **each AE**:
   (`DELETE /crm/v3/lists/<id>`; soft-delete, restorable in HubSpot for a window).
 - **Owner basis:** company owner = the **primary** associated company's `hubspot_owner_id`. A contact may
   have several associated companies; use the primary for grouping and ownership.
+- **Resolve owners INCLUDING archived — and fail safe to "inactive."** `search_owners` / `/crm/v3/owners`
+  return only **active** owners by default, so a **deactivated rep** (someone who left, e.g. Kelly) won't
+  appear and their owner id won't resolve. Three rules: (1) also fetch **archived** owners
+  (`GET /crm/v3/owners?archived=true`, or `search_owners` by `ownerIds` — which returns archived) so every
+  owner id resolves to a real `{name, isActive}`; (2) **default any unresolved owner id to _inactive_,
+  never active** — `owners.get(id, {}).get("active", False)`, not `…, True)`; (3) the **never-poach guard
+  must require a _confirmed-active_ outsider** — empty / shared (Genny·Ethan) / deactivated / unresolvable
+  owners are all safe to reassign to the AE; only a resolved `isActive=true` rep outside the set is held.
+  Defaulting unknown→active silently **protects a departed rep and drops their accounts from the run** — it
+  bit a batch of Kelly-owned accounts (Sparkle Wellness, Biotics, Newton Baby, Orveon, Black Rifle) that
+  were neither assigned nor flagged until a re-audit by owner id caught them.
 - **Enum + date:** the stage value is exactly `assigned`; dates are `YYYY-MM-DD`.
 - Do all the heavy lifting (membership pull, grouping, LPT balance) in a throwaway script in your
   scratchpad — keep large API payloads out of context (batch-read 100 ids at a time).

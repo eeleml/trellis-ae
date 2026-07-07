@@ -29,7 +29,9 @@ Speed matters: this runs once per contact across a whole list. Minimize MCP roun
   requesting AE — i.e. when it would change the verdict. If nothing signals, skip the timeline call.
 
 ## Checks (use the HubSpot MCP — load via ToolSearch: get_crm_objects, search_crm_objects, query_crm_data)
-1. **Owner** — is the contact or its company owned? By whom (resolve the owner id to a name)?
+1. **Owner** — is the contact or its company owned? By whom (resolve the owner id to a name — **look up
+   archived owners too**: a departed rep like Kelly isn't in the default owner list, so resolve by owner id
+   or the flag shows a raw id instead of a name)?
 2. **Open deals** — any non-closed deal on the company? Stage + owner. *(from the batched fetch)*
 3. **Lifecycle** — is it `customer`, `Meeting Booked` (51311693), SQL, or Opportunity? Or a dead
    stage (Disqualified 52694967 / Wrong Info 51582547 / Churned 56428076)? *(property)*

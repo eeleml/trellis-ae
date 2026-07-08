@@ -45,14 +45,15 @@ throttled, let it back off and continue rather than shrinking the list. The AE c
    that lost it), and `closed_lost_reason_comment_competitor` + `who_we_lost_to` (if they went elsewhere).
    Also pull the **close date** — **when we last spoke**, the anchor for the "what's new since"
    cross-reference — plus the stage reached and the most-recent deal owner.
-2. **RoE — trust a fresh stamp, else check live.** If `claude_roe_status` is set AND `claude_roe_cleared_for`
-   == this AE's owner id AND `claude_roe_motion == closed_lost` AND `claude_roe_checked_date` is within 7
-   days → use the stamp (don't spawn `ob-verification`). Otherwise spawn `ob-verification` (motion
-   `closed_lost`, **passing the step-1 record**): it surfaces the owner (flag, don't block), and **does
-   block** on a new open deal, recent reply/meeting/call, customer/won, or opt-out. Then apply the
-   eligibility filter; drop hard-excludes and anything still in the 3-month cool-off. *(Assigner pre-clears
-   only the `cold` motion today, so closed-lost usually checks live — the gate just avoids rework if a
-   closed_lost stamp exists.)*
+2. **RoE — a fresh `cleared` stamp is the ONLY thing that skips the live check.** A stamp is fresh +
+   matching only if `claude_roe_cleared_for` == this AE's owner id AND `claude_roe_motion == closed_lost`
+   AND `claude_roe_checked_date` is within 7 days. If it's a fresh + matching **`cleared`**, use it (don't
+   spawn `ob-verification`). If it's a fresh + matching **`blocked`/`flagged`**, **HOLD + surface the
+   `claude_roe_note`** — held unless the AE explicitly clears it or runs RoE live. Otherwise (no/stale/other
+   stamp) spawn `ob-verification` (motion `closed_lost`, **passing the step-1 record**): it surfaces the
+   owner (flag, don't block), and **does block** on a new open deal, recent reply/meeting/call, customer/won,
+   or opt-out. Then apply the eligibility filter; drop hard-excludes and anything still in the 3-month
+   cool-off. *(Assigner pre-clears only the `cold` motion today, so closed-lost usually checks live.)*
 3. **Research** — spawn `ob-internal-research` (motion `closed_lost`: deal history + **Fathom objection
    calls first**, **reusing the step-1 record**) and `ob-external-research` (what's changed on their side) in parallel.
 4. **What's new since they passed** — read **`config/whats-new.md`** and pick the Trellis release(s)

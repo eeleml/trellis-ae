@@ -17,11 +17,14 @@ oddly. Read-only; safe to run anytime.
 ## What "sound" means here — the system invariants to check against
 Every motion skill / agent should hold these. Flag any violation:
 - **Draft-only / never auto-send** a prospect email; **never auto-dial.** (Drafts go to Gmail; the AE sends.)
-- **RoE gate is mandatory** — cold / closed_lost / local outreach must clear RoE first and skip anyone not
-  `clear_to_contact`. It's satisfied **either** by spawning `ob-verification` live **or** by trusting a
-  fresh `claude_roe_*` stamp (status set, `cleared_for` == the requesting AE, `motion` matches,
-  `checked_date` within 7 days); a stale/mismatched/absent stamp must fall back to a live check. A motion
-  that neither checks live nor honors a valid stamp is a violation.
+- **RoE gate is mandatory, and only an affirmative clear proceeds.** cold / closed_lost / local outreach
+  must clear RoE first and only work contacts that are affirmatively clear. A contact is clear **only** via
+  (a) a live `ob-verification` returning `clear_to_contact`, or (b) a fresh, matching **`cleared`** stamp
+  (`claude_roe_status == cleared`, `cleared_for` == the requesting AE, `motion` matches, `checked_date`
+  within 7 days). A **`blocked`/`flagged`** stamp, or a stale/mismatched/absent one, is **NOT** a clear:
+  it must **hold + surface** the contact (and may be resolved by a live check or explicit human clear),
+  never auto-proceed. A motion that drafts on the strength of a non-`cleared` stamp, or that skips RoE
+  entirely, is a violation.
 - **Gmail is the source of truth** for what was sent; all cadence timing is **business days off actual send
   dates**, not draft dates.
 - **No fabrication** — emails, phones, metrics, events are never invented; case-study figures are used

@@ -8,7 +8,7 @@
     {
       "name": "trellis-ae",
       "source": "./plugins/trellis-ae",
-      "version": "0.9.21",
+      "version": "0.9.22",
       "description": "AE-facing outbound suite: cold-outbound, closed-lost re-engagement, local door-knock/lunch prep, in-thread follow-ups, an accountability checker, and contact-finder. All email is drafted into the AE's Gmail for review — nothing is sent automatically."
     }
   ]

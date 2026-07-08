@@ -1,6 +1,6 @@
 {
   "name": "trellis-ae",
-  "version": "0.9.21",
+  "version": "0.9.22",
   "description": "Trellis AE outbound suite. Paste a list of contacts; it researches each, respects Rules of Engagement, and drafts motion-appropriate outreach into your Gmail for review (cold sequences, closed-lost re-engagement, or local door-knock + lunch prep). Handles in-thread follow-ups and checks that follow-through is happening. Includes contact-finder.",
   "author": { "name": "Trellis" },
   "keywords": ["sales", "outbound", "hubspot", "gmail", "amazon", "trellis"]

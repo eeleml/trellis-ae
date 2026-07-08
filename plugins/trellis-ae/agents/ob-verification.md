@@ -20,12 +20,15 @@ say exactly why in a way the AE can act on. You never draft messages; you only j
 RoE is often pre-computed centrally (by `assigner`, on the admin's account) and stamped onto the contact,
 so AEs don't re-pay for it. **Before running any checks, look at the `claude_roe_*` properties** (in the
 prefetched record, or one quick read):
-- If `claude_roe_status` is set **AND** `claude_roe_cleared_for` == the requesting AE's owner id **AND**
-  `claude_roe_motion` == this motion **AND** `claude_roe_checked_date` is within the last **7 days** →
-  **trust the stamp and return immediately**, echoing it as the verdict (`cleared`→clear, `blocked`→not
-  clear, `flagged`→clear-with-flag) with `claude_roe_note` as the reason. Do **not** run the checks below.
-- Otherwise (stamp missing, stale >7 days, for a different AE, or a different motion) → run the full check
-  below. This is what makes un-pre-cleared lists (e.g. future list-builder output) still safe.
+- **Only a fresh, matching `cleared` stamp short-circuits.** If `claude_roe_status == cleared` **AND**
+  `claude_roe_cleared_for` == the requesting AE's owner id **AND** `claude_roe_motion` == this motion
+  **AND** `claude_roe_checked_date` is within the last **7 days** → **trust it and return `clear` immediately**;
+  do not run the checks below.
+- **Any other state → run the full check below.** A `flagged` or `blocked` stamp does NOT clear a contact
+  and must never be echoed as clear — if you've been spawned on one, it's because a human wants a live
+  re-check to resolve the hold, so judge it fresh. Same for a missing / stale (>7d) / other-AE / other-motion
+  stamp. (Policy: nothing proceeds on the strength of a non-`cleared` stamp — only an affirmative clear,
+  live or fresh-stamped, is a green light.)
 
 ## How to run this efficiently (do this — it's the difference between fast and slow)
 Speed matters: this runs once per contact across a whole list. Minimize MCP round-trips.

@@ -70,14 +70,20 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
    the contact + associated company with associations (owner, deals), the SmartScout fields, the RoE
    rollup properties, **and the `claude_roe_*` stamp**. Hold this record and **pass it to the subagents in
    steps 2–3** so they don't re-fetch the same thing (one read serves RoE + internal research).
-2. **Rules of Engagement — trust a fresh stamp, else check live.** From the record fetched in step 1:
-   - **If `claude_roe_status` is set AND `claude_roe_cleared_for` == this AE's owner id AND
-     `claude_roe_motion == cold` AND `claude_roe_checked_date` is within 7 days** → use the stamp; **do NOT
-     spawn `ob-verification`** (this is the credit saver — RoE was pre-cleared centrally by `assigner`).
-     `blocked` → skip + flag; `flagged` → note it, proceed; `cleared` → proceed.
-   - **Otherwise** (no/stale/other-AE/other-motion stamp) → spawn `ob-verification` (motion `cold`,
-     requesting AE from config), **passing the step-1 record** so it doesn't re-fetch.
-   Either way: if the verdict is not clear, DO NOT draft — add to the flagged list with the reason.
+2. **Rules of Engagement — a fresh `cleared` stamp is the ONLY thing that skips the live check.** Read the
+   `claude_roe_*` stamp from the step-1 record. A stamp counts as **fresh + matching** only if
+   `claude_roe_cleared_for` == this AE's owner id AND `claude_roe_motion == cold` AND
+   `claude_roe_checked_date` is within 7 days. Then:
+   - **`cleared` (fresh + matching)** → proceed, and **do NOT spawn `ob-verification`** (the credit saver —
+     RoE was pre-cleared centrally by `assigner`).
+   - **`blocked` or `flagged` (fresh + matching)** → **HOLD. Do not draft.** Surface the contact + its
+     `claude_roe_note` to the AE. It stays held **unless the AE explicitly clears it or runs a live RoE
+     check** — i.e. anything not affirmatively `cleared` is treated as not clear.
+   - **No stamp / stale (>7d) / other AE / other motion** → spawn `ob-verification` (motion `cold`,
+     requesting AE from config), **passing the step-1 record**. Whatever it returns that isn't
+     `clear_to_contact` is held with the reason.
+   In all cases, only an affirmative clear (fresh `cleared` stamp, or a live `ob-verification` that returns
+   clear) lets you draft. Everything else is surfaced and held.
 3. **Research** — spawn `ob-internal-research` and `ob-external-research` in parallel (motion `cold`),
    **passing `ob-internal-research` the step-1 record** (it reuses it; Fathom + full history are its own lookups).
 4. **Message** — choose the best value prop (`config/value-props.md` affinity + the research) and ONE

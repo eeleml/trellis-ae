@@ -66,12 +66,20 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
 - The AE can override: "run it all at once" (fastest, higher throttle risk) or name a different wave size.
 
 ## Steps (per contact — run in capped waves; see Pace & walk-away above)
-1. **Resolve** the contact in HubSpot (by email; else search name + company). Get the contact, the
-   associated company, and the SmartScout fields on the company record.
-2. **Rules of Engagement** — spawn the `ob-verification` subagent (motion: `cold`, requesting AE
-   from config). If `clear_to_contact = false`, DO NOT draft — add to the flagged list with the
-   reason. Only proceed for cleared contacts.
-3. **Research** — spawn `ob-internal-research` and `ob-external-research` in parallel (motion `cold`).
+1. **Resolve + fetch once** (by email; else search name + company). In **one** `get_crm_objects` call, pull
+   the contact + associated company with associations (owner, deals), the SmartScout fields, the RoE
+   rollup properties, **and the `claude_roe_*` stamp**. Hold this record and **pass it to the subagents in
+   steps 2–3** so they don't re-fetch the same thing (one read serves RoE + internal research).
+2. **Rules of Engagement — trust a fresh stamp, else check live.** From the record fetched in step 1:
+   - **If `claude_roe_status` is set AND `claude_roe_cleared_for` == this AE's owner id AND
+     `claude_roe_motion == cold` AND `claude_roe_checked_date` is within 7 days** → use the stamp; **do NOT
+     spawn `ob-verification`** (this is the credit saver — RoE was pre-cleared centrally by `assigner`).
+     `blocked` → skip + flag; `flagged` → note it, proceed; `cleared` → proceed.
+   - **Otherwise** (no/stale/other-AE/other-motion stamp) → spawn `ob-verification` (motion `cold`,
+     requesting AE from config), **passing the step-1 record** so it doesn't re-fetch.
+   Either way: if the verdict is not clear, DO NOT draft — add to the flagged list with the reason.
+3. **Research** — spawn `ob-internal-research` and `ob-external-research` in parallel (motion `cold`),
+   **passing `ob-internal-research` the step-1 record** (it reuses it; Fathom + full history are its own lookups).
 4. **Message** — choose the best value prop (`config/value-props.md` affinity + the research) and ONE
    case study read **live** from the team case-study index (Drive/Notion pointer in config) — use its
    metric **verbatim**; if the vertical isn't covered, use the strongest in-value-prop metric as generic

@@ -20,6 +20,15 @@ missing, tell them to enable it in Claude → Settings → Connectors — **you 
 - **Slack** (only if they'll run `accountability` or want reply alerts) — `slack_search_channels`.
 If a required one is missing, gather what you can, tell them to connect it, and have them re-run setup.
 
+**Then trim the rest — this is a real credit saver, not housekeeping.** Every connected MCP server's tool
+definitions are re-loaded into context on **every subagent spawn**, and the outbound skills spawn several
+agents per contact — so an unused connector's cost is paid dozens of times per list. trellis-ae uses **only
+the six above** (HubSpot, Gmail, Fathom, Drive, Chrome-if-needed, Slack). **List every _other_ connector
+that's currently connected and tell them to disconnect it** — especially heavy ones like **Shopify, Notion,
+Google Calendar, Claude Preview, and the MCP registry**, which the plugin never touches. On a lower-credit
+plan this is the single biggest reduction, with zero loss of function. (You can't disconnect for them —
+point them to Settings → Connectors.)
+
 ## 2. Identify the AE
 Ask their **full name** and **work email**, then:
 - Resolve their **HubSpot owner ID** with `search_owners` (match on email/name) — confirm the match.

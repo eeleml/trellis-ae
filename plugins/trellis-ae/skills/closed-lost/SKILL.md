@@ -37,17 +37,24 @@ so a big run doesn't spike the rate limit and stall on retries. Keep a running t
 throttled, let it back off and continue rather than shrinking the list. The AE can override the wave size.
 
 ## Per-contact pipeline (run in capped waves; see Pace & walk-away above)
-1. **Resolve** the contact + company + the **Closed Lost deal**. Pull the **full lost-reason picture**,
-   not just the category: `closed_lost_category` + `closed_lost_reason_1`/`_2` (the structured reason),
-   `closed_lost_reason` (the free-text *"Closed Lost Reason Comment"*), `closed_lost_reason_comment_product`
-   (the product/feature gap that lost it), and `closed_lost_reason_comment_competitor` + `who_we_lost_to`
-   (if they went elsewhere). Also pull the **close date** — this is **when we last spoke**, the anchor for
-   the "what's new since" cross-reference — plus the stage reached and the most-recent deal owner.
-2. **RoE** — spawn `ob-verification` (motion `closed_lost`): it surfaces the owner (flag, don't block),
-   and **does block** on a new open deal, recent reply/meeting/call, customer/won, or opt-out. Then
-   apply the eligibility filter; drop hard-excludes and anything still in the 3-month cool-off.
+1. **Resolve + fetch once** the contact + company + the **Closed Lost deal**. In one fetch also grab the
+   RoE rollup properties and the **`claude_roe_*` stamp**, and hold the record to **pass to the subagents**
+   (steps 2–3) so they don't re-fetch. Pull the **full lost-reason picture**, not just the category:
+   `closed_lost_category` + `closed_lost_reason_1`/`_2` (the structured reason), `closed_lost_reason` (the
+   free-text *"Closed Lost Reason Comment"*), `closed_lost_reason_comment_product` (the product/feature gap
+   that lost it), and `closed_lost_reason_comment_competitor` + `who_we_lost_to` (if they went elsewhere).
+   Also pull the **close date** — **when we last spoke**, the anchor for the "what's new since"
+   cross-reference — plus the stage reached and the most-recent deal owner.
+2. **RoE — trust a fresh stamp, else check live.** If `claude_roe_status` is set AND `claude_roe_cleared_for`
+   == this AE's owner id AND `claude_roe_motion == closed_lost` AND `claude_roe_checked_date` is within 7
+   days → use the stamp (don't spawn `ob-verification`). Otherwise spawn `ob-verification` (motion
+   `closed_lost`, **passing the step-1 record**): it surfaces the owner (flag, don't block), and **does
+   block** on a new open deal, recent reply/meeting/call, customer/won, or opt-out. Then apply the
+   eligibility filter; drop hard-excludes and anything still in the 3-month cool-off. *(Assigner pre-clears
+   only the `cold` motion today, so closed-lost usually checks live — the gate just avoids rework if a
+   closed_lost stamp exists.)*
 3. **Research** — spawn `ob-internal-research` (motion `closed_lost`: deal history + **Fathom objection
-   calls first**) and `ob-external-research` (what's changed on their side) in parallel.
+   calls first**, **reusing the step-1 record**) and `ob-external-research` (what's changed on their side) in parallel.
 4. **What's new since they passed** — read **`config/whats-new.md`** and pick the Trellis release(s)
    **dated after the deal's close date** (when we last spoke), preferring the one that answers their lost
    reason (especially the product/feature gap in `closed_lost_reason_comment_product`). If nothing

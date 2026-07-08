@@ -143,11 +143,15 @@ offer to batch it in chunks.
      ("already in motion, not a cold prospect") so it gets pulled from a cold list. (`customer` is also an
      RoE hard stop.) This is the signal a "cold" list secretly contains live accounts.
 
-8. **Rules of Engagement — only in "for a specific AE" mode:** spawn the **`ob-verification`** subagent
-   (Task tool, `subagent_type: ob-verification`; **motion `qualify`**, requesting AE from intake). The
-   `qualify` motion surfaces owner / open-deal / replied / meeting / recent-call / competing-outreach as
-   **flags** (never auto-fails); it is hard NOT clear only on opt-out / out-of-business / dead stage. In
-   **general** mode, skip RoE — just record the current owner, if any, for later routing.
+8. **Rules of Engagement — only in "for a specific AE" mode:** first check the **`claude_roe_*` stamp** on
+   the contact — if `claude_roe_status` is set AND `claude_roe_cleared_for` == the intake AE's owner id AND
+   `claude_roe_motion == qualify` AND `claude_roe_checked_date` is within 7 days, **use the stamp** and
+   skip the spawn. Otherwise spawn the **`ob-verification`** subagent (Task tool, `subagent_type:
+   ob-verification`; **motion `qualify`**, requesting AE from intake, **passing any record you already
+   fetched**). The `qualify` motion surfaces owner / open-deal / replied / meeting / recent-call /
+   competing-outreach as **flags** (never auto-fails); it is hard NOT clear only on opt-out /
+   out-of-business / dead stage. In **general** mode, skip RoE — just record the current owner, if any,
+   for later routing.
 
 ## Verdict (precedence: fail → revisit → flag → go)
 Resolve in this order; the first that matches wins the bucket:

@@ -9,6 +9,10 @@ not browse the web (that's external research) and you never invent facts.
 
 ## Input
 The contact (HubSpot id and/or email + company) and the motion: `cold`, `closed_lost`, or `local`.
+**(Optional) A prefetched contact+company record** — when the calling skill already fetched the contact,
+company, associations, and the SmartScout fields, it passes them in. **Use that as-is; don't re-fetch the
+same record.** Only query HubSpot for what's genuinely not in it (e.g. full deal/activity history, and
+Fathom is always a separate lookup).
 
 ## Where to look (priority depends on motion)
 Load tools via ToolSearch: HubSpot (search_crm_objects, query_crm_data, get_crm_objects, get_properties)

@@ -80,6 +80,8 @@ Show a compact plan and get a yes:
 - **Multi-contact account placements** (which big accounts went to whom) so they can eyeball the account-
   whole rule.
 - **Held out** (count + reason: owned by active rep X / out of scope).
+- **RoE pre-clear:** state that after assigning you'll pre-run RoE centrally and stamp `claude_roe_*`
+  (motion `cold`) so AEs don't re-pay for it — and offer to **skip** it.
 - Offer "skip confirmations for the rest of this run."
 
 On confirmation, for **each AE**:
@@ -88,13 +90,27 @@ On confirmation, for **each AE**:
 2. **Add** that AE's contact ids to the list.
 3. **Stamp** each of that AE's contacts: `icp_lead_stage = assigned`, `icp_lead_stage_date = <today>`,
    `icp_lead_batch = "ICP Leads for <Name> - <label>"` (the batch field mirrors the list name).
+4. **Pre-clear RoE and stamp `claude_roe_*`** (recommended — this is why it lives here). You run on the
+   **admin account**, so do the expensive Rules-of-Engagement check **once, centrally**, and cache it on
+   the record — then AEs' `cold-outbound` trusts the stamp instead of each re-spawning `ob-verification`
+   (saving a subagent per contact on their lower-credit machines). For each of that AE's contacts, spawn
+   the **`ob-verification`** subagent (`motion: cold` — assigned ICP leads are worked cold; requesting AE =
+   **this AE's owner id**). Then **batch-write** the returned stamp onto each contact:
+   `claude_roe_status`, `claude_roe_cleared_for` (= this AE's owner id), `claude_roe_motion = cold`,
+   `claude_roe_note`, `claude_roe_checked_date = <today>`. Run the checks in **capped waves (≤4 concurrent)**
+   like the outbound skills, and — per the membership-lag gotcha — **re-read a sample after writing** to
+   confirm the stamps landed (fanned-out writes can silently drop a record). *Skippable:* if the user says
+   "skip RoE" or the list isn't headed to cold outbound, omit this step; the AE skills will then run RoE
+   live as before.
 
 > **Idempotency:** if a contact is **already `assigned`**, don't re-stamp the date and don't move it; just
 > report it. Never downgrade a contact's stage here. Re-running on the same list should be a no-op for
 > already-assigned contacts and only pick up newly-`verified` ones.
 
 > **Property guard:** if HubSpot errors that `icp_lead_stage` / `icp_lead_stage_date` / `icp_lead_batch`
-> are unknown properties, **stop and tell the user** — do not improvise onto a different field.
+> or the `claude_roe_*` properties are unknown, **stop and tell the user** — do not improvise onto a
+> different field. (The `claude_roe_*` set is created once via the properties API; if they're missing,
+> RoE pre-clear can't stamp — report it rather than silently skipping.)
 
 ## Gotchas (these will bite — follow them)
 - **Get list members from the Lists API, not SQL.** The CRM SQL `hs_crm_search.ilsListIds = '<id>'` filter
@@ -128,6 +144,9 @@ On confirmation, for **each AE**:
 ## Hand back (keep it short)
 - "Assigned **N** of **M** across **k** AEs — &lt;Ryan X · Liam Y · Alex Z · Hamza W&gt; (final totals)."
 - Per-AE: list link + final count. Note any big accounts that drove the split.
+- **RoE pre-clear (if run):** "Pre-cleared RoE for **N** contacts (cleared X · flagged Y · blocked Z),
+  stamped `claude_roe_*` (motion cold) — AEs' cold-outbound will trust these for 7 days instead of
+  re-checking." Note any **blocked** contacts so they're not worked.
 - **Held out** (+ why) and any **already-assigned** contacts skipped.
 - Remind: `hubspot_owner_id` was not changed (list + stage/batch only); offer to flip owners or handle the
   held-out set separately.

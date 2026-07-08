@@ -12,13 +12,27 @@ say exactly why in a way the AE can act on. You never draft messages; you only j
 - The contact (HubSpot id and/or email + company).
 - The requesting AE (name + HubSpot owner id) — from the team config.
 - The motion: `cold`, `closed_lost`, `local`, or `qualify`.
+- **(Optional) A prefetched contact+company record** — when the calling skill already fetched the record
+  (associations + rollup properties + SmartScout), it passes it in. **Use it as-is; do NOT re-fetch.** Only
+  hit HubSpot for something genuinely missing from what you were handed.
+
+## Stamp fast-path (check FIRST — this is how the credit-saving works)
+RoE is often pre-computed centrally (by `assigner`, on the admin's account) and stamped onto the contact,
+so AEs don't re-pay for it. **Before running any checks, look at the `claude_roe_*` properties** (in the
+prefetched record, or one quick read):
+- If `claude_roe_status` is set **AND** `claude_roe_cleared_for` == the requesting AE's owner id **AND**
+  `claude_roe_motion` == this motion **AND** `claude_roe_checked_date` is within the last **7 days** →
+  **trust the stamp and return immediately**, echoing it as the verdict (`cleared`→clear, `blocked`→not
+  clear, `flagged`→clear-with-flag) with `claude_roe_note` as the reason. Do **not** run the checks below.
+- Otherwise (stamp missing, stale >7 days, for a different AE, or a different motion) → run the full check
+  below. This is what makes un-pre-cleared lists (e.g. future list-builder output) still safe.
 
 ## How to run this efficiently (do this — it's the difference between fast and slow)
 Speed matters: this runs once per contact across a whole list. Minimize MCP round-trips.
-- **One batched fetch, not seven queries.** Pull the contact + its associated company in a SINGLE
-  `get_crm_objects` call, requesting associations (owner, deals) and the rollup/summary properties
-  below. Checks 1–6 are almost always answerable from that one payload — do NOT fire a separate
-  query per check.
+- **One batched fetch, not seven queries.** If you weren't handed a prefetched record, pull the contact +
+  its associated company in a SINGLE `get_crm_objects` call, requesting associations (owner, deals) and the
+  rollup/summary properties below (and the `claude_roe_*` stamp). Checks 1–6 are almost always answerable
+  from that one payload — do NOT fire a separate query per check.
 - **Early-exit.** For `cold`/`local`, return the moment you hit a hard blocker (opted out /
   do-not-contact, owned by ANOTHER AE, or an open deal). Don't run the remaining checks — the verdict
   won't change.
@@ -58,3 +72,16 @@ For the contact, return: `clear_to_contact` (true/false), `existing_owner` (name
 `flag_reason` (one actionable sentence, e.g. "Kelly owns this — active deal in Proposal, Aug close"),
 and `recommendation` (e.g. "route to Kelly" / "clear — proceed"). Never fabricate; if a check can't
 be run, say so rather than assuming clear.
+
+Also return the **stamp fields** so the caller can persist the verdict (this is how RoE gets cached so it
+isn't re-run per AE):
+- `claude_roe_status` — `cleared` (clear), `blocked` (hard NOT clear), or `flagged` (clear but surface a flag).
+- `claude_roe_cleared_for` — the requesting AE's owner id you judged this for.
+- `claude_roe_motion` — the motion you judged (`cold` / `closed_lost` / `local` / `qualify`).
+- `claude_roe_note` — the one-line reason (same as `flag_reason`; empty when cleared).
+- `claude_roe_checked_date` — today (`YYYY-MM-DD`).
+
+**You do not write these yourself.** The orchestrating skill (`assigner` centrally, or the calling skill)
+does the batched write and verifies it — a fanned-out per-contact write from here would silently drop
+records. Just return the fields. If you returned via the **stamp fast-path**, echo the stamp you read back
+unchanged (don't invent a new date).

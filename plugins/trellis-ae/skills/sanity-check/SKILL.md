@@ -17,8 +17,11 @@ oddly. Read-only; safe to run anytime.
 ## What "sound" means here — the system invariants to check against
 Every motion skill / agent should hold these. Flag any violation:
 - **Draft-only / never auto-send** a prospect email; **never auto-dial.** (Drafts go to Gmail; the AE sends.)
-- **RoE gate is mandatory** — cold / closed_lost / local outreach must run `ob-verification` first and skip
-  anyone not `clear_to_contact`.
+- **RoE gate is mandatory** — cold / closed_lost / local outreach must clear RoE first and skip anyone not
+  `clear_to_contact`. It's satisfied **either** by spawning `ob-verification` live **or** by trusting a
+  fresh `claude_roe_*` stamp (status set, `cleared_for` == the requesting AE, `motion` matches,
+  `checked_date` within 7 days); a stale/mismatched/absent stamp must fall back to a live check. A motion
+  that neither checks live nor honors a valid stamp is a violation.
 - **Gmail is the source of truth** for what was sent; all cadence timing is **business days off actual send
   dates**, not draft dates.
 - **No fabrication** — emails, phones, metrics, events are never invented; case-study figures are used
@@ -50,7 +53,13 @@ Every motion skill / agent should hold these. Flag any violation:
    outputs** and verify against spec: Gmail drafts exist and are **unsent**; calling notes are **exactly 3
    bullets**; HubSpot call tasks aren't duplicated; `trellis_sequence_status` values are from the allowed
    set; a draft's case-study metric matches the index. Read-only.
-6. **Report** (see Hand back). Propose fixes; **never apply them** — hand them to a human to action.
+6. **Connector hygiene (environment, not the plugin)** — note which MCP connectors are currently connected
+   and flag any **beyond the six trellis-ae uses** (HubSpot, Gmail, Fathom, Drive, Chrome-if-needed, Slack).
+   Extra connectors (Shopify, Notion, Calendar, Preview, MCP registry, etc.) reload into context on every
+   subagent spawn and quietly burn credits/rate-limit on lower plans. Report them as a 🟡 with "disconnect
+   in Settings → Connectors" — it's the cheapest token win and the top thing to check if someone reports
+   throttling.
+7. **Report** (see Hand back). Propose fixes; **never apply them** — hand them to a human to action.
 
 ## Hand back (severity-ranked)
 - **🔴 Blocking** — invariant violations or broken references that would cause wrong behavior (e.g., a motion

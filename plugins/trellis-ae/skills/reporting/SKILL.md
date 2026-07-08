@@ -83,5 +83,9 @@ draft dates.
 - Factual, concise, per-AE — a dial-ready briefing, not a wall of numbers. Lead with time-sensitive items.
 - **No open rate** unless an open/click tracker is added — manual Gmail sends aren't tracked, so don't
   invent it.
+- **Connector nudge (Mondays only, one line):** on the first briefing of the week, add a single reminder —
+  *"Running slow / throttled? Keep only HubSpot, Gmail, Fathom, Drive, Slack connected (Settings →
+  Connectors); extra connectors burn tokens on every step."* Skip it the rest of the week; never let it
+  crowd out time-sensitive items.
 - Never fabricate metrics; if a source can't be read, say so rather than guessing.
 - Keep metric definitions consistent with `accountability` (shared layer).

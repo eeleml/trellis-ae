@@ -46,14 +46,18 @@ the next as each finishes, so a big list doesn't spike the rate limit and stall 
 tally; if throttled, let it back off and continue rather than shrinking the list. The AE can override the wave size.
 
 ## Per-contact pipeline (run in capped waves; see Pace & walk-away above)
-1. **Resolve** the contact + company in HubSpot. Pull the SmartScout fields and any location / HQ on the
-   company record.
-2. **Rules of Engagement** — spawn the `ob-verification` subagent (motion `local`, requesting AE from
-   config). `local` blocks on the same conditions as cold: ownership by another AE, an open deal,
+1. **Resolve + fetch once** the contact + company in HubSpot. In one fetch pull the SmartScout fields, any
+   location / HQ, the RoE rollup properties, **and the `claude_roe_*` stamp**, and hold the record to
+   **pass to the subagents** (steps 2–3) so they don't re-fetch.
+2. **Rules of Engagement — trust a fresh stamp, else check live.** If `claude_roe_status` is set AND
+   `claude_roe_cleared_for` == this AE's owner id AND `claude_roe_motion == local` AND
+   `claude_roe_checked_date` is within 7 days → use the stamp (don't spawn `ob-verification`). Otherwise
+   spawn the `ob-verification` subagent (motion `local`, requesting AE from config, **passing the step-1
+   record**). `local` blocks on the same conditions as cold: ownership by another AE, an open deal,
    lifecycle Meeting Booked / SQL / Opportunity / customer, a prior reply / booked meeting / recent
-   connected call, or opt-out. If `clear_to_contact = false`, DO NOT prep — add to the flagged list with
-   the reason. Only proceed for cleared contacts.
-3. **Research** — spawn `ob-internal-research` (motion `local`) and `ob-external-research` in parallel.
+   connected call, or opt-out. If not clear, DO NOT prep — add to the flagged list with the reason.
+   *(Assigner pre-clears only `cold` today, so local usually checks live.)*
+3. **Research** — spawn `ob-internal-research` (motion `local`, **reusing the step-1 record**) and `ob-external-research` in parallel.
    Lean on **local presence** (storefront, HQ city, regional events / shows) plus the trigger and the
    SmartScout footprint.
 4. **Message** — choose the value prop (`config/value-props.md` affinity + the research) and ONE case

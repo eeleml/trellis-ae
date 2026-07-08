@@ -72,8 +72,7 @@ each AE picks up a new version one of two ways:
   /plugin update trellis-ae@trellis-ae
   ```
 
-To check the installed version: `/plugin` → **Installed**. A Slack ping fires on every push to `main` via
-`.github/workflows/notify-slack.yml` (requires the `SLACK_WEBHOOK_URL` repo secret).
+To check the installed version: `/plugin` → **Installed**.
 
 ## Status
 Built: `setup`, `qualify`, `cold-outbound`, `closed-lost`, `follow-ups`, `accountability`, `reporting`,

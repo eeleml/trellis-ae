@@ -11,7 +11,7 @@ calling skill does those). Never fabricate facts, metrics, or prior conversation
 **Universal (every motion):**
 - **No em dashes** in any prospect-facing copy (emails or texts) — use commas, periods, parentheses, colons.
 - **Never mention AI / "AI-powered" / automation**, and never imply the outreach itself is automated.
-- **One give-first CTA per email** — the single most relevant free audit (pricing OR ads, never combined) plus the quick 15-minute call that unlocks it; no double-asks, no homework questions.
+- **One give-first CTA per email** — a single low-friction ask, matched to the research. An **audit (pricing OR ads, never combined) only when it's clearly the most relevant offer, and at most once per sequence**; otherwise a different give (a similar-brand before/after, an outcome-anchored 15-minute call, a category benchmark). No double-asks, no homework questions.
 - **Lead with the outcome, not the mechanics**; open on the contact's role/brand + a real researched signal, never a token.
 - **Prospect-side facts need a source** — any number, %, price, date, or named event about THEIR business appears ONLY if the research tagged it `[verified]` with a source; otherwise omit it or pose it as a question. Never quote their reviews, star ratings, followers, or SKU count back as figures.
 - **Case-study metric VERBATIM** — never re-round or invent; SmartScout figures are internal routing signals only, never quoted to the prospect.
@@ -45,17 +45,24 @@ topic subjects out-open vendor-led ones. **Capitalize the first word (and any pr
 product); never write a subject in all-lowercase** — an all-lowercase subject reads careless and trips spam
 filters. Sentence case, not Title Case On Every Word.
 
-**One CTA per email, give-first and low-friction.** The main offer is a free audit, and we run the single
-most relevant one: a **pricing audit** for pricing / Buy-Box-led pain, an **ads audit** for ad-efficiency or
-scaling-into-demand pain (two separate audits, never a combined "pricing and ads audit"). An accurate audit
-needs a quick call to connect their account, so frame it as a light two-part ask, the audit then the call
-that unlocks it ("Worth a free [pricing/ads] audit? It would take a quick 15-minute call to connect your
-account and pull the real numbers"). Say "it would take a quick 15-minute call," not the clipped "a quick
-15-minute call." Never promise a
-no-call audit or "I'll just send it" (we cannot produce real numbers without their account). No
-qualifying/homework questions ("what is your current pricing strategy?"), no double-asks, no run-on CTAs.
-**Vary the CTA across the sequence** (the audit-call, a specific time, a before/after from a similar brand);
-don't repeat "worth 15 minutes."
+**One CTA per email, give-first, low-friction, and matched to the research. Don't default to an audit.**
+Pick the ask that fits what the research actually surfaced:
+- **When the signal isn't clearly pricing- or ads-led** (a launch, expansion, new role, general scaling, or
+  a soft trigger) → use a **non-audit give**: a **before/after from a similar brand**, a short
+  **outcome-anchored call** ("15 minutes to walk through how a brand like yours did [X]"), or a **category
+  benchmark / insight**. This is the default for most emails.
+- **Pricing audit** → only when the signal is pricing / Buy-Box / margin (a premium brand against cheap
+  competitors, visible price swings, margin left on the table).
+- **Ads audit** → only when the signal is ad efficiency / ACoS / scaling into demand / wasted spend.
+An audit is a strong offer but, used on every touch, it reads generic and templated. So **reserve it for
+when it's the clearly most relevant ask, and use it at most once in the 5-touch sequence** (twice only if
+pricing AND ads are both plainly in play). When you do offer one, it needs their account, so frame it as a
+light two-part ask, the audit then the call that unlocks it: "Worth a free [pricing/ads] audit? It would
+take a quick 15-minute call to connect your account and pull the real numbers." Say "it would take a quick
+15-minute call," and never promise a no-call audit or "I'll just send it" (we cannot produce real numbers
+without their account). No qualifying/homework questions ("what is your current pricing strategy?"), no
+double-asks, no run-on CTAs. **Vary the CTA across the sequence** so it never reads as "audit, audit,
+audit"; don't repeat "worth 15 minutes."
 
 **Don't close on a clipped tag-CTA.** A touch should not end with a one-breath ask or stock sign-off bolted
 on ("Want it?", "Want a teardown?", "Thoughts?", "I'm one reply away," "I'm easy to reach"). They read

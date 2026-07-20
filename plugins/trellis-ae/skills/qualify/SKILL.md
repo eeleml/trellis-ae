@@ -100,10 +100,28 @@ offer to batch it in chunks.
    - **Alcohol / drinking-related** — beer, wine, spirits, brewing / brewery, distillery, liquor,
      cocktail, cider, hard seltzer, sommelier (e.g. "Beer Innovation," "Wine &amp; Spirits Division," "Beer
      Division"). Alcohol isn't an Amazon-seller motion.
+   - **Creative / art / design** — creative director/producer/strategist, art director/artist/artwork,
+     graphic, design/designer. (Added 2026-07-20.)
+   - **Shipping / logistics / warehouse / fulfillment** — operations, not an ecommerce/marketplace role.
+   - **IT / information technology / information systems** — technical/infra, not ecom. (Word-boundary
+     match `\bIT\b` / "information tech(nology)" / "information system(s)" — do NOT catch "digital",
+     "security", "recruiting".)
+   - **Talent / recruiting / HR / People** — talent acquisition, recruiter, HRBP, people ops. (Word-
+     boundary — "acquisition" alone is ICP-ish for *customer* acquisition; only fail on talent/HR context.)
+   - **Finance / accounting / compliance / data analyst** — back-office/analytics, not a decision role.
+     (Also "controller" — usually finance; a bare "eCommerce Controller" is borderline, FLAG don't auto-fail.)
+   - **Production / manufacturing** — VP/Head/Manager of Production, manufacturing. Ops, not ecom. (2026-07-20)
+   - **Product management** — VP/Head/Chief **of Product**, Product Manager/Coordinator, Product Development.
+     KEEP **"Product Marketing"** (that's marketing) and **"Ecommerce Product Manager"** (ecommerce-led) — only
+     fail pure product-management roles. (2026-07-20)
+   - **Photo / imaging / retouching / videography** — creative-production family (with graphic/design). (2026-07-20)
+   - **Retired** — any title containing "retired."
    - **Title ≠ company — it's the ROLE that's out, not the account.** A fine-ICP company can employ
      out-of-scope people: keep the company, fail the person (e.g. Constellation Brands stays as an
      account, but its beer / wine / spirits marketers fail). Match on the title; when genuinely unsure,
      **FLAG** for the AE instead of silently failing. **Add new non-fit role patterns here as they surface.**
+     GOTCHA (2026-07): use **word boundaries** for short/substring-risky terms — "art" must not catch
+     "p**art**nerships", "IT" must not catch "dig**it**al"/"secur**it**y". Match `\bart(s|ist|work)?\b`, `\bit\b`.
 
 4. **Deliverability — can't email → `failed_enrollment`:** any of `hs_email_optout = true`,
    a prior hard bounce (`hs_email_hard_bounce_reason_enum` set, or `hs_email_bounce > 0`),
@@ -114,7 +132,11 @@ offer to batch it in chunks.
 5. **Employment valid + resolve any company mismatch:** spawn the **`ob-external-research`** subagent
    scoped to *"is &lt;name&gt;, &lt;jobtitle&gt;, still at &lt;company&gt;? what is their current employer?"*
    - **Left the company entirely** → `failed_verification` + note **"needs replacement contact"** (feeds
-     the net-new finder).
+     the net-new finder). **Departure bar (audit-proven 2026-07): only fail on a LIVE-profile or fresh
+     first-party departure signal** — a different employer seen only in aggregators (ZoomInfo/RocketReach/
+     Datanyze) or search-snippet summaries is stale-cache/hallucination-prone (a 15-contact audit found
+     2/2 snippet-level "departed" verdicts were wrong). If the departure evidence is snippet-only, treat
+     as "employment unconfirmed" (FLAG), not a fail.
    - **Company mismatch** (from step 2 — email/`company` ≠ associated company): use LinkedIn to decide
      which is stale — the **email** (they moved; the named company may be right) or the **company
      name/association** (outdated or wrong; brand-vs-parent is common). **Surface the finding, confirm with

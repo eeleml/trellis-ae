@@ -1,6 +1,6 @@
 ---
 name: assigner
-description: Assign a VERIFIED ICP list of contacts across a set of AEs and stamp each CONTACT's ICP Lead Stage = assigned — the Assign stage that runs AFTER /qualify marks contacts verified. Routes by company ownership first (the AE who owns the account gets the contact), keeps every contact at the same account with the same AE, then distributes the leftover (unowned + orphans of deactivated owners) evenly across the AEs to even out overall workload. Builds one static "ICP Leads for [NAME] - [DATE]" list per AE and stamps icp_lead_stage / icp_lead_stage_date / icp_lead_batch. Never poaches accounts owned by an active rep outside the set. Use when someone says "assign this verified list," "assigner," "split these leads across the team / Ryan, Liam, Alex, Hamza," or right after /qualify.
+description: Assign a VERIFIED ICP list of contacts across a set of AEs and stamp each CONTACT's ICP Lead Stage = assigned — the Assign stage that runs AFTER /qualify marks contacts verified. Routes by company ownership first (the AE who owns the account gets the contact), keeps every contact at the same account with the same AE, then distributes the leftover (unowned + orphans of deactivated owners) evenly across the AEs to even out overall workload. Builds one static "ICP Leads for [NAME] - [DATE]" list per AE and stamps icp_lead_stage / icp_lead_stage_date / icp_lead_batch. Never poaches accounts owned by an active rep outside the set. Use when someone says "assign this verified list," "assigner," "split these leads across the team / Ryan, Liam, Hamza," or right after /qualify.
 ---
 
 # Lead Assigner
@@ -19,7 +19,8 @@ the HubSpot record owner. Leave `hubspot_owner_id` alone unless the user explici
 1. **Source list** — a HubSpot list link or ID (this should be the *verified* pool, e.g. "ICP Leads
    Verified"). Pull the **real membership** (see Gotchas — do NOT trust the SQL `ilsListIds` filter).
    **Count the actual members and report the number.**
-2. **AEs** — the names to assign across (e.g. Ryan, Liam, Alex, Hamza). Resolve each to an **owner id**
+2. **AEs** — the names to assign across (e.g. Ryan, Liam, Hamza — **Alex left the company 2026-07**; see the
+   departed-rep note in Gotchas). Resolve each to an **owner id**
    with `search_owners`, and note whether each is **active**. Confirm the resolved names back.
 3. **Date label** for the lists — default to today as `Month Dayth` (e.g. "June 29th") unless they give
    one. List names are `ICP Leads for <Name> - <label>`.
@@ -82,6 +83,12 @@ Show a compact plan and get a yes:
 - **Held out** (count + reason: owned by active rep X / out of scope).
 - **RoE pre-clear:** state that after assigning you'll pre-run RoE centrally and stamp `claude_roe_*`
   (motion `cold`) so AEs don't re-pay for it — and offer to **skip** it.
+- **Mobile coverage (dialing readiness):** per AE, count how many to-be-assigned contacts have a
+  `clay_mobile` and how many are **missing** it, and **flag the missing set to the user by name/link** —
+  cold calling needs the number, so the user runs mobile enrichment on them (before or right after the
+  assign). Offer to stamp `clay_phone_status = needs_update` on the missing ones to queue them into the
+  standing **`Clay - Needs Mobile`** dynamic list (id 8351 → the mobile-waterfall table auto-writes
+  `clay_mobile` back). Do **NOT** enrich mobiles from here — assigner only flags; the user runs it.
 - Offer "skip confirmations for the rest of this run."
 
 On confirmation, for **each AE**:
@@ -136,25 +143,35 @@ On confirmation, for **each AE**:
   owners are all safe to reassign to the AE; only a resolved `isActive=true` rep outside the set is held.
   Defaulting unknown→active silently **protects a departed rep and drops their accounts from the run** — it
   bit a batch of Kelly-owned accounts (Sparkle Wellness, Biotics, Newton Baby, Orveon, Black Rifle) that
-  were neither assigned nor flagged until a re-audit by owner id caught them.
+  were neither assigned nor flagged until a re-audit by owner id caught them. **Known departed reps: Kelly and
+  Alex (Alex left 2026-07).** Treat their owned accounts as **orphans to redistribute**, never as active
+  territory — fetch archived owners so their ids resolve to `isActive=false`, and never hold a contact just
+  because Kelly or Alex owns the account.
 - **Enum + date:** the stage value is exactly `assigned`; dates are `YYYY-MM-DD`.
 - Do all the heavy lifting (membership pull, grouping, LPT balance) in a throwaway script in your
   scratchpad — keep large API payloads out of context (batch-read 100 ids at a time).
 
 ## Hand back (keep it short)
-- "Assigned **N** of **M** across **k** AEs — &lt;Ryan X · Liam Y · Alex Z · Hamza W&gt; (final totals)."
+- "Assigned **N** of **M** across **k** AEs — &lt;Ryan X · Liam Y · Hamza Z&gt; (final totals)."
 - Per-AE: list link + final count. Note any big accounts that drove the split.
 - **RoE pre-clear (if run):** "Pre-cleared RoE for **N** contacts (cleared X · flagged Y · blocked Z),
   stamped `claude_roe_*` (motion cold) — AEs' cold-outbound will trust these for 7 days instead of
   re-checking." Note any **blocked** contacts so they're not worked.
 - **Held out** (+ why) and any **already-assigned** contacts skipped.
+- **Mobile coverage:** "**N** of **M** assigned have a `clay_mobile`; **K** missing." List the missing
+  (or note they're queued in `Clay - Needs Mobile`) so the user enriches before working them — dialing
+  without a number is dead time.
 - Remind: `hubspot_owner_id` was not changed (list + stage/batch only); offer to flip owners or handle the
   held-out set separately.
 
 ## Rules
 - **Confirm before any HubSpot write.** Never change `hubspot_owner_id` unless asked.
-- **Accounts stay whole** — every contact at the same company goes to the same AE, in both phases.
+- **Accounts stay whole, but capped ≤5 best per brand.** A brand/company goes **entirely to ONE AE — never split a brand across AEs.** But assign at most **5 contacts per brand TOTAL** (not per AE); when a brand has >5, keep the **5 best titles** and defer the rest (leave them `verified`). Title priority for "best": **Ecommerce (higher seniority = better) > paid media > CMO > marketing director > CEO > head of brand > other ICP/growth (amazon/marketplace/acquisition/lifecycle/brand)**. Enforce ≤5/brand + no-split in both phases. (Added 2026-07-20 per Ethan — replaces pure accounts-whole, which over-indexed single brands like POP MART/HexArmor.)
+- **Brand-covered ACROSS weeks (count prior assignments).** The ≤5/brand cap counts contacts **already `assigned`** to that brand in PRIOR runs, not just this run. Before assigning, look up each brand's existing `assigned` count + owning AE: (1) a brand already at 5 assigned → **skip entirely** (covered, assign none); (2) a brand with 1-4 already assigned → may top up to 5 **only on the SAME AE that already owns it** (never split to a 2nd AE); (3) never let a brand exceed **5 total assigned across all time**. This prevents re-assigning a covered account's leftover `verified` contacts week after week. (Added 2026-07-20 per Ethan: "exclude these now that we've assigned that brand already.")
 - **Never poach** an account owned by an active rep outside the AE set.
 - **Idempotent** — don't re-stamp/move already-`assigned` contacts; never downgrade a stage.
+- **Flag missing mobiles, never enrich.** Report which assigned contacts lack `clay_mobile` (the mobile
+  lives in `clay_mobile`, not `phone`/`mobilephone`) so the user can enrich before dialing; assigner
+  itself never enriches phones — it only surfaces the gap.
 - You are the **Assign** stage: you only set `assigned` (+ list + batch). Qualifying stays upstream
   (`qualify`); sequence enrollment stays downstream — never enroll from here.

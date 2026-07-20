@@ -8,6 +8,13 @@ Load WebSearch via ToolSearch (and WebFetch for linkedin.com when useful).
 
 ## Run these lookups
 1. **LinkedIn** — the person's **current employer + title** and **prior employer(s) with rough dates** (so a move like Old Co → New Co is visible even when we have no old record), tenure, scope, recent posts, and any **job change** since we last engaged them.
+   **Departure bar (audit-proven 2026-07):** snippet/aggregator evidence may CONFIRM employment but may
+   never PROVE departure. ZoomInfo/RocketReach/Datanyze/Google-cache titles lag the live profile by
+   months-to-years, and AI search-summary snippets have FABRICATED career moves. Only report "left the
+   company" from the **live profile itself** or a fresh dated **first-party** source (their own post, a
+   company announcement, dated press). A different employer appearing only in an aggregator or snippet →
+   report employment as **unconfirmed**, never as a departure. Also: a brand-new role (started this year)
+   or a renamed profile slug often makes someone invisible to snippet search — absence is never departure.
 2. **Amazon** — the brand's category, product range, scale signals (best-seller rank, review counts,
    rough # of ASINs), and any visible ad/pricing dynamics. **A brand-name search returning nothing is NOT
    proof they are absent from Amazon** — they may sell under a different consumer brand or seller name, or

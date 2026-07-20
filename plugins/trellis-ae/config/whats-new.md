@@ -12,19 +12,21 @@ the messaging falls back to what's changed on the prospect's side + "how did it 
 Keep this current: one entry per release, **newest first**, dated `YYYY-MM`. Tie each to the lost-reason
 it answers where you can (price / feature gap / integration / bandwidth) so the angle writes itself.
 
-> ⚠️ **PLACEHOLDER — replace with real Trellis releases before relying on this.** The entries below are
-> format examples, not real releases; nothing is cited to a prospect until it's a real, dated entry.
-
 ## Releases (newest first)
 
-### 2026-05 — <Release name>
-- **What:** <one line, buyer-legible outcome — what it lets a brand do, not the mechanics>
-- **Answers lost reason:** <e.g. "missing feature: bulk listing edits" / "price" / "no Walmart support">
-- **Outreach one-liner:** "<how a rep says it: 'since we last talked we shipped <X> so you can <outcome>'>"
+### 2026-07 — Qore (public beta)
+- **What:** the new operating layer for Amazon ad teams — Qore turns the playbook a team runs by hand
+  (weekly audits, reporting, SOP checks, wasted-spend sweeps) into scheduled workflows that run the same
+  way every time, fully auditable, with sign-off before anything changes in-market. Works across Amazon,
+  Walmart, Shopify, Google, and TikTok. (Naming: the product is **Qore** — never "a version of Trellis,"
+  never "Core"/"Amplify.")
+- **Answers lost reason:** price / budget (a lighter way in — but NO prices or commercial terms in the
+  email; the rep handles commercials live); "wanted software / to keep it in-house"; "didn't trust a
+  black box"; "no bandwidth for another tool" (their own SOPs run on schedule instead of adding work).
+- **Outreach one-liner:** "Since we last talked we launched Qore — it takes the checks your team does by
+  hand each week and runs them on a schedule, the same way every time, with sign-off before anything
+  changes in-market."
+  *(Qore copy rules apply: no prices or commercial terms, one beta-customer quote as the only proof, no
+  AI-mention — see `ob-messaging`.)*
 
-### 2026-02 — <Release name>
-- **What:** ...
-- **Answers lost reason:** ...
-- **Outreach one-liner:** ...
-
-<!-- Add each new release at the TOP. Delete this placeholder block once real entries exist. -->
+<!-- Add each new release at the TOP. -->

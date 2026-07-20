@@ -53,8 +53,9 @@ morning, accountability Friday). Each AE sets this up once.
 ## Data hygiene
 This repo can be **public**: it holds no secrets and no customer data. Secrets live locally (Clay
 webhook in `~/.clay-webhook`, Apollo key in env). Internal identifiers (owner ids, portal) live in
-`~/.trellis-ae/config.json`. Case-study customer names/metrics live in **Google Drive**, read live at
-messaging time — never committed.
+`~/.trellis-ae/config.json`. Case-study customer names/metrics live in `config/case-studies.md`, which is
+**gitignored — never committed to the public repo** and baked into the shareable zip instead; the **Google
+Drive** index stays the source of truth for updating it.
 
 ## Updating the team
 Edit the skill/agent, bump `version` in **both** `plugins/trellis-ae/.claude-plugin/plugin.json` and

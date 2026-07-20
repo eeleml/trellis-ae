@@ -1,6 +1,6 @@
 ---
 name: closed-lost
-description: Re-engage closed-lost contacts — people who already know Trellis and previously said no. Pulls deal history + the original objection (Fathom) first, tailors the angle to why they passed, respects a 3-month cool-off and Rules of Engagement, and drafts a 5-touch re-engagement sequence into Gmail for review. Use when an AE pastes a closed-lost list or asks "get me closed-lost accounts."
+description: Re-engage closed-lost contacts — people who already know Trellis and previously said no. Pulls deal history + the original objection (Fathom) first, tailors the angle to why they passed, respects a 3-month cool-off and Rules of Engagement, and drafts Email 1 of a 5-touch re-engagement sequence into Gmail for review (later touches draft on cadence via follow-ups). Use when an AE pastes a closed-lost list or asks "get me closed-lost accounts."
 ---
 
 # Closed-Lost Re-Engagement
@@ -64,17 +64,20 @@ throttled, let it back off and continue rather than shrinking the list. The AE c
 5. **Message** — hand `ob-messaging` the full angle inputs: the **full lost reason** (category +
    reason_1/2 + the free-text comment + product/competitor comments), whether they signed with a
    competitor, the **"what's new since" release** (or none) from step 4, plus the value prop + a verified
-   case study (live from Drive/Notion, metric verbatim). You **MUST** spawn the **`ob-messaging`**
+   case study (from the local baked index `config/case-studies.md`, metric verbatim; the Drive index is
+   the source of truth for updating it — no live Drive call per contact). You **MUST** spawn the **`ob-messaging`**
    subagent (Task tool, `subagent_type: ob-messaging`; motion `closed_lost`). It tailors the re-engagement
    angle to why they passed (price → new ROI; **missing feature → name the actual release from
    `whats-new.md` that closes that gap**; timing → "is now better?"; no bandwidth → fully-managed;
-   **competitor-signed → a check-in tone, not a pitch**), leads from the prior conversation, and writes the
-   same **5-touch sequence sent as the most recent deal owner** (the rep who met them; if that owner is an
-   inactive user, flag for reassignment to a live rep). *(Angle logic + voice live in `ob-messaging`.)*
+   **competitor-signed → a check-in tone, not a pitch**), leads from the prior conversation, and returns
+   **E1 in full + a one-line plan (angle + give/CTA) per later touch** for the same 5-touch arc, **sent as
+   the most recent deal owner** (the rep who met them; if that owner is an inactive user, flag for
+   reassignment to a live rep). It does NOT write E2–E5 bodies now — `follow-ups` has it write each later
+   touch at send time. *(Angle logic + voice live in `ob-messaging`.)*
 6. **Preview, then draft Email 1 in Gmail.** First **show the AE, in chat, the chosen angle + E1
    (subject + body)** — including which lost reason and which "what's new" release it leans on — so they
    can sign off **before anything lands in Gmail**. (For a large batch, preview a representative sample +
-   the angle logic rather than making them approve all 25 one by one.) On the AE's OK: use ob-messaging's
+   the angle logic rather than making them approve every one individually.) On the AE's OK: use ob-messaging's
    E1 **verbatim** (append only the signature); **first gate it against `ob-messaging`'s HARD CONSTRAINTS
    for the `closed_lost` motion — if any fail, send it back to redo, don't fix it yourself.** Then
    `create_draft` (to the prospect; never send). Capture the draft id.
@@ -101,4 +104,4 @@ throttled, let it back off and continue rather than shrinking the list. The AE c
 - Never fabricate the prior conversation — pull it from HubSpot/Fathom; if there's no record, say so
   and keep it light ("wanted to reconnect"). **Same for "what's new": cite a Trellis release only if it's
   in `config/whats-new.md` AND postdates the last contact — never invent "we shipped X."**
-- Cap 25; respect RoE (flag owner, block on active motion / opt-out).
+- No fixed cap — process the whole list in capped waves (see Pace & walk-away); respect RoE (flag owner, block on active motion / opt-out).

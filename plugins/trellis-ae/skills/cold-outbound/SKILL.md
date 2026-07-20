@@ -87,12 +87,14 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
 3. **Research** — spawn `ob-internal-research` and `ob-external-research` in parallel (motion `cold`),
    **passing `ob-internal-research` the step-1 record** (it reuses it; Fathom + full history are its own lookups).
 4. **Message** — choose the best value prop (`config/value-props.md` affinity + the research) and ONE
-   case study read **live** from the team case-study index (Drive/Notion pointer in config) — use its
+   case study from the **local baked index `config/case-studies.md`** — use its
    metric **verbatim**; if the vertical isn't covered, use the strongest in-value-prop metric as generic
-   cross-category proof. Then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `cold`), passing it the research
-   + chosen value prop + case study + the batch's experiment/arm if one was picked. It returns the full **5-touch sequence** (E1 new → E2 reply; E3 new
-   → E4 reply → breakup), the per-touch angles for the follow-up plan, and a short outreach summary —
-   all in Trellis voice. **Do not write, rewrite, shorten, or "polish" any subject or body yourself** — sequence structure, lengths, threading, voice, and every copy rule live in `ob-messaging`, so the team tunes messaging in one place. If it doesn't return usable copy, re-run the agent; never substitute your own.
+   cross-category proof. (No live Drive call per contact — the Drive index in config is the source of
+   truth for *updating* the baked file and for the PDFs; fall back to it only if the baked index is
+   missing.) Then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `cold`), passing it the research
+   + chosen value prop + case study + the batch's experiment/arm if one was picked. It returns **E1 in full** (subject + body) **+ a one-line plan per later touch** (E2/E3/E4/breakup — the angle + intended give/CTA; threading arc E1 new → E2 reply; E3 new
+   → E4 reply → breakup) and a short outreach summary —
+   all in Trellis voice. It does NOT write E2–E5 bodies now — `follow-ups` has ob-messaging write each later touch at send time, against the plan + the live thread. **Do not write, rewrite, shorten, or "polish" any subject or body yourself** — sequence structure, lengths, threading, voice, and every copy rule live in `ob-messaging`, so the team tunes messaging in one place. If it doesn't return usable copy, re-run the agent; never substitute your own.
 5. **Draft Email 1 in Gmail** — use ob-messaging's E1 **subject and body exactly as returned** (only
    append the signature from config); never edit, shorten, or rewrite them. **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (the block at the top of the agent) for the `cold` motion; if ANY fail, send it back to `ob-messaging` to redo — do NOT fix it yourself.**
    Then `create_draft` (to: the prospect, subject, body, signature from config). **Never send.** Capture the draft id.
@@ -103,11 +105,13 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
      email", "demo with Fahim 5/12", "met Ethan at Prosper Show"). Name the prior rep/person when there's
      a real prior interaction; otherwise "cold — no prior contact." **Never put internal CRM ownership in
      the note** (no "owned by you / [rep]") — it isn't dialer-relevant. One short line each, no preamble.
-   - **Follow-up plan** (so `follow-ups` can regenerate the sequence) — set `trellis_value_prop`,
+   - **Follow-up plan** (so `follow-ups` can generate the later touches) — set `trellis_value_prop`,
      `trellis_batch_date`, `trellis_sequence_status = pending`, and put a COMPACT plan in
-     `trellis_outreach_context`: value prop, the trigger, the per-touch angle for E2/E3/E4/breakup, the
+     `trellis_outreach_context`: value prop, the trigger, the per-touch angle **+ give/CTA** for
+     E2/E3/E4/breakup (exactly as ob-messaging returned them — this is how the audit-at-most-once cap
+     carries into the later touches), the
      threading map (A: E1→E2 reply; B: E3 new→E4 reply→breakup reply), and E1's subject. Do NOT store
-     full bodies — `follow-ups` regenerates them from this plan + the live thread.
+     full bodies — `follow-ups` writes each touch from this plan + the live thread at send time.
 
 ## Hand back (keep it short)
 - "Drafted **N** Email 1's in your Gmail — review and send." 
@@ -118,6 +122,6 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
 
 ## Rules
 - **Draft only — never send.** No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
-- **All prospect-facing copy comes from `ob-messaging`, period.** Every subject and body (all five touches) is produced by the `ob-messaging` subagent — you may not write, rewrite, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from ob-messaging, it doesn't go in the draft.
+- **All prospect-facing copy comes from `ob-messaging`, period.** Every subject and body (E1 here; each later touch via `follow-ups` at send time) is produced by the `ob-messaging` subagent — you may not write, rewrite, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from ob-messaging, it doesn't go in the draft.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.

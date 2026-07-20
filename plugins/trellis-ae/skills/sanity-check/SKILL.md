@@ -28,7 +28,8 @@ Every motion skill / agent should hold these. Flag any violation:
 - **Gmail is the source of truth** for what was sent; all cadence timing is **business days off actual send
   dates**, not draft dates.
 - **No fabrication** — emails, phones, metrics, events are never invented; case-study figures are used
-  **verbatim** from the live Drive/Notion index (never committed to the repo).
+  **verbatim** from the local baked index `config/case-studies.md` (gitignored — never committed to the
+  public repo, baked into the shareable zip; the Drive index is the source of truth for updating it).
 - **Skip the advanced** — replied / meeting-booked / converted / opted-out contacts are skipped, not nagged.
 - **Idempotency** — repeatable actions don't duplicate (follow-ups never double-drafts; create-tasks never
   double-creates a call task).

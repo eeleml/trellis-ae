@@ -100,3 +100,26 @@ which could reuse the registry later — extract a shared helper at that point i
   by stable hash of contact id. Once the `cs-format` phase-2 wiring exists, this needs only the
   arm-appropriate closer from `ob-messaging` — nothing new to build.
 - **Results so far:** —
+
+---
+
+## qore-pitch — does a Qore-led (operating layer) pitch out-convert the default value-prop pick?
+- **Status:** `draft` — runnable via the existing picker; no new wiring (the arms only change which value
+  prop + angle `ob-messaging` renders). One experiment per batch, so run it on batches not already in
+  `closer-style` (Ethan wants that one run first).
+- **Hypothesis:** for prospects with how-the-team-runs signals (a real ads operator, key-person risk,
+  SOP/reporting grind, ChatGPT/Claude tinkering), pitching Qore ("your playbook, running" — the manual
+  checks become scheduled, auditable workflows) earns more replies than the default ads/pricing/managed
+  pitch, which can read as another agency-style service.
+- **Arms (≈1/2 each):**
+  - `qore-pitch:control` — today's behavior: value prop picked per `config/value-props.md` affinity + research.
+  - `qore-pitch:qore` — Qore-led: the sequence pitches the operating layer per the Qore rules in
+    `ob-messaging` (no prices/commercial terms, one beta-quote proof only, no-AI, operator vocabulary).
+    Everything else identical.
+- **Metric:** reply rate (primary), meeting-booked rate (secondary).
+- **Minimum sample:** ≥ ~100 sends per arm (placeholder — reply rates are low; smaller is directional only).
+- **Assignment:** at `cold-outbound` time — stable hash of contact id, stamp `trellis_ab_variant = qore-pitch:<arm>`.
+- **Notes:** best on batches with a real ads team/operator (in-house or agency), key-person risk, or
+  DIY/budget signals (the contrast is meaningless for prospects who clearly need fully-managed).
+  `follow-ups` carries the arm through the later touches as usual.
+- **Results so far:** —

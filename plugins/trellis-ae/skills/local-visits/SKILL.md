@@ -63,8 +63,9 @@ tally; if throttled, let it back off and continue rather than shrinking the list
    Lean on **local presence** (storefront, HQ city, regional events / shows) plus the trigger and the
    SmartScout footprint.
 4. **Message** — choose the value prop (`config/value-props.md` affinity + the research) and ONE case
-   study read **live** from the team case-study index (metric **verbatim**; if the vertical isn't
-   covered, use the strongest in-value-prop metric as generic proof). Then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `local`) with the research + value prop + case study. It returns the
+   study from the **local baked index `config/case-studies.md`** (metric **verbatim**; if the vertical isn't
+   covered, use the strongest in-value-prop metric as generic proof; the Drive index is the source of
+   truth for updating the baked file — fall back to it only if the baked index is missing). Then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `local`) with the research + value prop + case study. It returns the
    **text-message drafts**, the **lunch-invite email**, and the **walk-in talking points**, all in
    Trellis voice. *(Voice + structure live in `ob-messaging`, so the team tunes messaging in one place.)*
 5. **Lunch invite → Gmail draft** — use ob-messaging's lunch-invite subject + body **verbatim** (append only the signature); `create_draft` (to: the prospect). **Never send.** Capture the draft id. (Texts are NOT drafted into Gmail — see step 7.) **Before using ANY of ob-messaging's output (texts, lunch email, talking points), gate it against `ob-messaging`'s HARD CONSTRAINTS (top of the agent) for the `local` motion — especially texts ≤320 chars, no signature, no em dashes; if any fail, send it back to redo, don't fix it yourself.**

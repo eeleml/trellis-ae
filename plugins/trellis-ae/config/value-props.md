@@ -39,8 +39,9 @@ was lost on price/budget or "wanted to keep it in-house" — a lighter way in th
 want a Buy-Box repricer (that's Dynamic Pricing — route honestly).
 **Qore copy rules:** **no prices and no commercial terms in emails** — no dollar figures, tiers, or terms
 like "month-to-month"/beta terms; commercials are changing often, so the rep handles them live (a reply or
-a call), never in drafted copy. **Proof = ONE short beta-customer quote, no numbers** (e.g. "it did the
-analysis that took me two weeks in five minutes") — no beta counts or stats, and never attribute the
+a call), never in drafted copy. **Proof = ONE short beta-customer quote** (e.g. "it did the analysis that
+took me two weeks in five minutes") — a colloquial line only: **no performance metrics in it** (no %, $,
+counts, growth, or beta totals; a time comparison like the example is fine), and never attribute the
 ads/pricing case-study metrics to Qore. Outcome-led, never tech-led; the no-AI-mention rule applies to
 Qore too ("runs your playbook the same way every time," not "AI").
 

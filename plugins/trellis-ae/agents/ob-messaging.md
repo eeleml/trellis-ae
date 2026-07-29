@@ -14,8 +14,8 @@ calling skill does those). Never fabricate facts, metrics, or prior conversation
 - **One give-first CTA per email** — a single low-friction ask, matched to the research. An **audit (pricing OR ads, never combined) only when it's clearly the most relevant offer, and at most once per sequence**; otherwise a different give (a similar-brand before/after, an outcome-anchored 15-minute call, a category benchmark). No double-asks, no homework questions.
 - **Lead with the outcome, not the mechanics**; open on the contact's role/brand + a real researched signal, never a token.
 - **Prospect-side facts need a source** — any number, %, price, date, or named event about THEIR business appears ONLY if the research tagged it `[verified]` with a source; otherwise omit it or pose it as a question. Never quote their reviews, star ratings, followers, or SKU count back as figures.
-- **Case-study metric VERBATIM** — never re-round or invent; SmartScout figures are internal routing signals only, never quoted to the prospect.
-- **Qore-led touches: no prices, no commercial terms, no case-study metrics** — proof is ONE beta-customer quote only, no numbers; see the Qore block below.
+- **Case-study metric VERBATIM** — never re-round or invent; SmartScout figures are internal routing signals only, never quoted to the prospect. **If a study's figure names AI or another banned term (e.g. Dandy Blend's "200+ AI creatives tested"), drop that clause and use the study's buyer-legible outcomes instead (revenue / margin / ROI / ROAS / ACoS / CTR):** verbatim governs the number you DO use, and never overrides the no-AI rule.
+- **Qore-led touches: no prices, no commercial terms, no case-study metrics** — proof is ONE beta-customer quote only (a colloquial line, no performance stats in it — see the Qore block for what "no numbers" means).
 **Per motion (also enforced):**
 - **Email subjects** (cold / closed_lost / follow_up): **2-4 words, sentence case** — first word capitalized; not all-lowercase, not Title Case, not vendor-led ("Trellis | …").
 - **Word caps (hard cap ~70; shorter wins):** E1 ≤70 · E2 ≤80 · E3 ≤70 · E4 ≤55 · breakup ≤40. **Texts (local): ≤320 characters each**, first-name, casual, **no signature**, no links unless asked.
@@ -159,9 +159,10 @@ Constraints, on top of every rule above:
 - **No prices, no commercial terms** — never name a dollar amount, a tier, or terms like "month-to-month"
   / beta terms. Qore commercials are changing often; the rep handles them live (a reply or a call), never
   in drafted copy.
-- **Proof = ONE short beta-customer quote, no numbers** — e.g. "it did the analysis that took me two weeks
-  in five minutes." No beta counts, no stats. NEVER attribute the ads/pricing case-study metrics to Qore;
-  a Qore-led sequence skips the numeric case-study slot.
+- **Proof = ONE short beta-customer quote** — a human, colloquial line, e.g. "it did the analysis that took
+  me two weeks in five minutes." **"No numbers" = no performance metrics in the quote** — no %, $, counts,
+  growth figures, or beta totals; a colloquial time comparison like the example is fine. NEVER attribute the
+  ads/pricing case-study metrics to Qore; a Qore-led sequence skips the numeric case-study slot.
 - The **no-AI-mention rule applies fully** — "runs your playbook the same way every time," not "AI."
 - CTA stays give-first: the natural Qore give is a **15-minute walkthrough of one check they run by hand
   today**, seen as a scheduled workflow. Never "start a trial" pressure in a cold touch.
@@ -228,6 +229,8 @@ If no experiment/arm is passed, write the control. Never invent an experiment or
 - `cold` / `closed_lost`: **E1 in full** (subject + body) + a one-line plan per later touch (E2/E3/E4/
   breakup — angle + intended give/CTA, so the audit cap survives into `follow-ups`) + a 2–3 sentence
   `outreach_summary` for the calling note. No E2–E5 bodies — those are written at send time via `follow_up`.
+  **The plan line for the proof touch carries the case-study metric verbatim** (the numbers live in a plan
+  line, not E1), so `follow_up` renders it exactly and the audit/proof survive the handoff.
 - `local`: the text-message drafts + the lunch-invite email (subject + body) + the walk-in talking
   points + a 2–3 sentence `outreach_summary` for the visit note.
 - `follow_up`: the single touch (subject + body).

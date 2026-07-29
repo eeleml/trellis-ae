@@ -16,6 +16,18 @@ Assignment here means **list membership + the `icp_lead_stage` / `icp_lead_batch
 the HubSpot record owner. Leave `hubspot_owner_id` alone unless the user explicitly asks.
 
 ## Intake — ask what you don't have
+0. **Segment — AGENCY or BRAND? ASK FIRST if the user hasn't said, before running fully.** Trellis runs
+   **two parallel ICP tracks with separate lists**: **brands** (Amazon *sellers* → the general
+   `ICP Leads for [AE] - [date]` lists) and **agencies** (Amazon *service providers* → the separate
+   `Agency ICP Leads for [AE] - [date]` lists). The standing `verified` pool is **agency-dominated**, so a
+   general/brand run that doesn't filter will silently fill the brand lists with agencies. **Do not guess —
+   if the requester didn't specify agency vs brand, ASK before assigning anything.** Then filter the pool to
+   that segment: classify each company as brand vs agency via **SmartScout `seller_id`** (has one → seller =
+   brand), **agency-track list membership**, **company industry** (Marketing/Advertising Services = agency),
+   and **agency-name/domain signals** (agency, media, digital, marketing, consulting, PPC, SEO, commerce,
+   sellers, growth, etc.). Exclude the other segment entirely, and never mix an agency into a brand batch or
+   vice-versa. (Added 2026-07-27 after a general run mistakenly assigned ~135 agencies into the brand lists —
+   no double-assignment resulted, but they belonged in the agency track.)
 1. **Source list** — a HubSpot list link or ID (this should be the *verified* pool, e.g. "ICP Leads
    Verified"). Pull the **real membership** (see Gotchas — do NOT trust the SQL `ilsListIds` filter).
    **Count the actual members and report the number.**
@@ -70,9 +82,29 @@ Then distribute, **keeping every contact at the same account with the same AE**:
 1. Group leftover contacts by **primary company** (the account).
 2. Seed each AE's running total with its **Phase A count** (so balancing evens the *final* totals — unless
    they chose "split leftover evenly," in which case seed all at 0).
-3. **Largest account first**, assign each whole account to the **currently least-loaded AE** (LPT
-   bin-packing). This lands the final per-AE totals within ~1 of each other while never splitting an
-   account.
+3. **Hamza-first, west-to-east (timezone priority).** Before the general even-out, **build Hamza's list
+   first**: hand Hamza whole leftover accounts in **timezone order PST → MST → CST → EST** (west coast
+   first — exhaust the higher-priority timezone before moving east), **capped at his balanced share** (his
+   even portion of the run — normally the standard **50/AE** target; see the 50-per-AE goal below). The
+   priority gives Hamza **first pick of western accounts within his fair share — it does NOT hand him extra
+   beyond his share**; once he hits his share, remaining western accounts flow to the other AEs. Derive each
+   account's
+   timezone from the **primary company's geo — ZIP is the reliable key** (state/city are dirty, per the geo
+   gotcha): map US ZIP → timezone (**PST** = CA/OR/WA/NV, group AK/HI here too; **MST** = AZ/CO/UT/NM/MT/ID/WY;
+   **CST** = TX/IL/MN/MO/WI/LA/etc.; **EST** = NY/FL/GA/NC/OH/MA/etc.), falling back to `state` only when ZIP
+   is missing, and treat **unknown-timezone accounts as last** (after EST). Respect account-whole, ≤5/brand,
+   and never-poach throughout. (Added 2026-07-27 per Ethan — Hamza works west-coast hours, so give him the
+   western pipeline first.)
+4. **Then distribute the remaining leftover to the other AEs — east-to-west (conserve western inventory).**
+   Fill the non-Hamza AEs (Ryan/Liam) preferring **EST → CST → MST → PST** accounts (east coast first — the
+   mirror of Hamza's west-first). **When there's a large excess of accounts, give the others EST accounts
+   FIRST and do not hand them western (PST/MST) accounts until eastern supply is exhausted** — western
+   accounts are scarce and reserved for Hamza *this week and the following weeks* (we rebuild Hamza's
+   west-coast list every run), so don't burn them on Ryan/Liam while eastern accounts are available. Within
+   that ordering, use **largest account first → currently least-loaded of the non-Hamza AEs** (LPT
+   bin-packing) so their final totals land within ~1 of each other, never splitting an account. (If supply is
+   tight rather than in excess, just balance normally — the east-first preference only matters when there's
+   enough excess that the choice is real.) (Added 2026-07-27 per Ethan.)
 
 ## Confirm, THEN write (never write before the yes)
 Show a compact plan and get a yes:
@@ -83,12 +115,16 @@ Show a compact plan and get a yes:
 - **Held out** (count + reason: owned by active rep X / out of scope).
 - **RoE pre-clear:** state that after assigning you'll pre-run RoE centrally and stamp `claude_roe_*`
   (motion `cold`) so AEs don't re-pay for it — and offer to **skip** it.
-- **Mobile coverage (dialing readiness):** per AE, count how many to-be-assigned contacts have a
-  `clay_mobile` and how many are **missing** it, and **flag the missing set to the user by name/link** —
-  cold calling needs the number, so the user runs mobile enrichment on them (before or right after the
-  assign). Offer to stamp `clay_phone_status = needs_update` on the missing ones to queue them into the
-  standing **`Clay - Needs Mobile`** dynamic list (id 8351 → the mobile-waterfall table auto-writes
-  `clay_mobile` back). Do **NOT** enrich mobiles from here — assigner only flags; the user runs it.
+- **Mobile coverage (dialing readiness) — this is a HARD GATE, not just a flag (Ethan 2026-07-28):** a
+  contact with no `clay_mobile` is **not assignable** — exclude it and top up from phone-having `verified`
+  contacts so the per-AE target is hit with dialable records only (see the PHONE REQUIRED rule below). Per
+  AE, report how many were **excluded for no mobile** and confirm the tops-up. Offer to stamp
+  `clay_phone_status = needs_update` on the excluded ones to queue them into the
+  standing **`Clay - Needs Mobile`** dynamic list (id 8351; as of 2026-07-28 the list gate is
+  `clay_phone_status = needs_update` ALONE — the old `claude_employment_status = verified` AND-condition
+  was removed, so a bare `needs_update` stamp queues ANY contact, not just build-list employment-verified
+  ones → the mobile-waterfall table auto-writes `clay_mobile` back). Do **NOT** enrich mobiles from
+  here — assigner only flags; the user runs it.
 - Offer "skip confirmations for the rest of this run."
 
 On confirmation, for **each AE**:
@@ -169,9 +205,26 @@ On confirmation, for **each AE**:
 - **Accounts stay whole, but capped ≤5 best per brand.** A brand/company goes **entirely to ONE AE — never split a brand across AEs.** But assign at most **5 contacts per brand TOTAL** (not per AE); when a brand has >5, keep the **5 best titles** and defer the rest (leave them `verified`). Title priority for "best": **Ecommerce (higher seniority = better) > paid media > CMO > marketing director > CEO > head of brand > other ICP/growth (amazon/marketplace/acquisition/lifecycle/brand)**. Enforce ≤5/brand + no-split in both phases. (Added 2026-07-20 per Ethan — replaces pure accounts-whole, which over-indexed single brands like POP MART/HexArmor.)
 - **Brand-covered ACROSS weeks (count prior assignments).** The ≤5/brand cap counts contacts **already `assigned`** to that brand in PRIOR runs, not just this run. Before assigning, look up each brand's existing `assigned` count + owning AE: (1) a brand already at 5 assigned → **skip entirely** (covered, assign none); (2) a brand with 1-4 already assigned → may top up to 5 **only on the SAME AE that already owns it** (never split to a 2nd AE); (3) never let a brand exceed **5 total assigned across all time**. This prevents re-assigning a covered account's leftover `verified` contacts week after week. (Added 2026-07-20 per Ethan: "exclude these now that we've assigned that brand already.")
 - **Never poach** an account owned by an active rep outside the AE set.
+- **Aim for 50 per AE each run (default target).** The standing goal is **50 contacts per AE** every run;
+  top up toward 50 each (source/backfill as needed) rather than stopping short. Balance evens the *final*
+  totals toward that target.
+- **Hamza-first by timezone (Phase B leftover only).** When distributing unowned/orphan accounts, build
+  **Hamza's list first** from **west-to-east timezones (PST → MST → CST → EST)**, deriving timezone from the
+  company's **ZIP** (reliable) → `state` fallback, unknown last — **capped at his balanced share** (first
+  pick within his fair portion, never extra beyond it). **Mirror for the other AEs: fill Ryan/Liam
+  east-to-west (EST → CST → MST → PST); on a large excess, give them EST accounts FIRST and don't touch
+  western (PST/MST) accounts until eastern is exhausted** — western inventory is reserved for Hamza this week
+  and future weeks. Then even out the rest. Ownership (Phase A) still wins — this only governs the free
+  leftover. (Ethan 2026-07-27.)
+- **Knock out open deals + genuinely-in-motion; but lifecycle is a high-water mark — check dates.** In the RoE pre-clear: an **open deal** (any non-closed stage) → pull + backfill (never cold-outreach an active opportunity; Ethan 2026-07-24). `customer` → pull. **Disqualified** → pull. For **Meeting Booked / SQL / Opportunity**, do NOT blanket-pull — `lifecyclestage` is the furthest stage ever reached, often years stale; read the meeting / last-activity **date** and only pull if recent + active (Ethan 2026-07-27). **Churned** → keep (winback-eligible), do not pull. Pull anything owned/recently-met by an **active outside rep** (never-poach — check meeting history, not just current owner: a reassigned contact can still be another rep's relationship). Backfill pulls to hold the target count.
 - **Idempotent** — don't re-stamp/move already-`assigned` contacts; never downgrade a stage.
-- **Flag missing mobiles, never enrich.** Report which assigned contacts lack `clay_mobile` (the mobile
-  lives in `clay_mobile`, not `phone`/`mobilephone`) so the user can enrich before dialing; assigner
-  itself never enriches phones — it only surfaces the gap.
+- **PHONE REQUIRED — never assign a contact without a `clay_mobile` (Ethan 2026-07-28).** A contact with
+  no `clay_mobile` is **not assignable** (the motion is cold-calling; no number = dead lead). **Gate on it:**
+  exclude no-mobile contacts from the assign entirely and **top up from phone-having `verified` contacts** to
+  hold the per-AE target — do NOT ship a list padded with un-dialable records. If a no-mobile contact was
+  already assigned, **pull it and stamp `failed_verification`** (note "no clay_mobile — phone-required rule";
+  it's recoverable to `verified` once the mobile enriches). Assigner still **never enriches** phones itself
+  (mobile lives in `clay_mobile`, not `phone`/`mobilephone`) — queue the gaps via `clay_phone_status =
+  needs_update` into list 8351 for the user's mobile-table run, then they re-enter a future run once dialable.
 - You are the **Assign** stage: you only set `assigned` (+ list + batch). Qualifying stays upstream
   (`qualify`); sequence enrollment stays downstream — never enroll from here.

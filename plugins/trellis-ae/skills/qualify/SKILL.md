@@ -77,6 +77,10 @@ offer to batch it in chunks.
      `hello@`, `team@`, `office@`, `bd@`, `orders@`, `marketing@`, `commercial@`, `accounts@`,
      `customer.service(s)@`. **Treat this list as examples, not exhaustive — use judgment: if the
      local-part isn't plausibly a real person's name, it's role-based.**
+   - **Institutional / wrong-domain email** (edu / gov) → `failed_verification` ("wrong email"): an address
+     at `*.edu`, `*.gov`, `schools.*` (e.g. `gnunez@schools.nyc.gov`), `k12`, `.ac.` / `.sch.` is a
+     school/government mailbox the Work-Email enrichment mis-returned — it won't reach the person at their
+     brand. (Audit 2026-07-24.)
    - **No real person name** on the record (blank first/last, or the name is just the company) → **FLAG**
      ("no contact name — confirm it's a real person"); if it ALSO has a role/shared mailbox, that's the
      `failed_verification` above.
@@ -92,7 +96,7 @@ offer to batch it in chunks.
      skip the domain-match comparison.
 
 3. **ICP role fit (job title) — a non-fit role → `failed_verification`:** the `jobtitle` should be a
-   plausible ecommerce / marketplace / brand decision-maker or influencer. Some roles are a **hard
+   plausible ecommerce / marketplace / brand decision-maker. Some roles are a **hard
    non-ICP fit no matter how good the company is** — **flag them and fail** (`failed_verification`, note
    "non-ICP role"):
    - **Field marketing** — event / regional / field roles (e.g. "Field Marketing Manager / Specialist /
@@ -115,6 +119,20 @@ offer to batch it in chunks.
      KEEP **"Product Marketing"** (that's marketing) and **"Ecommerce Product Manager"** (ecommerce-led) — only
      fail pure product-management roles. (2026-07-20)
    - **Photo / imaging / retouching / videography** — creative-production family (with graphic/design). (2026-07-20)
+   - **Influencer / affiliate / TikTok / social-creator** — influencer marketing/manager, affiliate marketing/manager,
+     TikTok / TikTok Shop manager, creator / social-commerce roles. Brand-side social/creator management, not an
+     ecom/marketplace decision-maker. (Added 2026-07-20 — **reverses** the earlier "affiliate/influencer mgr = keep".)
+   - **Brand ambassador / representative** — promotional "brand rep" / ambassador / "brand representative" roles are
+     influencers/promoters, not ecom decision-makers (matches the Playbook DROP list). (Audit 2026-07-24.)
+   - **French / non-English titles** — a job title in French (Gestionnaire, Directeur/Directrice, Responsable, Chargé,
+     Coordonnateur, Spécialiste, ...ventes / marque / développement, or accented text) → **exclude** (Ethan 2026-07-27).
+   - **Social / community / events / engagement** — social media, brand engagement, community, experiential, events,
+     brand advocacy → exclude (not an ecom/marketplace decision-maker). KEEP "Marketing & Communications" only at
+     **Director+ level** (below director = exclude). (2026-07-27)
+   - **Business operations** — "Business Operations" / "Bus Ops" / generic "Operations Manager" → exclude (ops, not
+     marketing/ecom). KEEP "**Marketing** Operations" (a marketing function). (2026-07-27)
+   - **Sales managers** — National / Regional / Territory / Area / generic "Sales Manager" → exclude. KEEP
+     "**Ecommerce** Sales Manager" (ecommerce = the buyer; Ethan: "good/great option"). (2026-07-27)
    - **Retired** — any title containing "retired."
    - **Title ≠ company — it's the ROLE that's out, not the account.** A fine-ICP company can employ
      out-of-scope people: keep the company, fail the person (e.g. Constellation Brands stays as an
@@ -159,11 +177,19 @@ offer to batch it in chunks.
      2 months** → **Revisit** (too fresh to re-poke); **2–6 months** ago → **FLAG**, bring up to the
      prompter. A closed deal with a **missing/unparseable `closedate`** → **FLAG** ("closed deal, date
      unknown") — never a silent Go.
-   - An **open** deal → in *for-a-specific-AE* mode it's an RoE flag (step 8); in **general** mode flag it
-     directly ("open deal, &lt;stage&gt;"). Either way it surfaces, never silently passes.
-   - **Active lifecycle** (`customer`, Meeting Booked `51311693`, SQL, Opportunity) → **FLAG in any mode**
-     ("already in motion, not a cold prospect") so it gets pulled from a cold list. (`customer` is also an
-     RoE hard stop.) This is the signal a "cold" list secretly contains live accounts.
+   - An **open** deal → **KNOCK OUT of a cold list entirely** (Ethan 2026-07-24: "if anything has open
+     deals knock them out"). An open deal = an active opportunity; cold-outreach would step on it — pull
+     it (`failed_verification`, note "open deal — in motion"), not just flag it. Applies in **both** modes.
+   - **Lifecycle is a HIGH-WATER MARK, not current status — read the DATES, don't blanket-pull by stage**
+     (Ethan 2026-07-27: `lifecyclestage` = the furthest stage a prospect ever reached, which may be years old):
+     - `customer` → **knock out** (active customer; different motion — RoE hard stop).
+     - **Meeting Booked / SQL / Opportunity** → **check recency + recent activity.** Recent + active (a meeting/
+       activity in roughly the last few months) → knock out (in motion). **Old & dormant** (e.g. a meeting 1–2+
+       years ago, nothing since) → fine to cold-list. Read the meeting / `hs_last_sales_activity` **date** and
+       the current owner — the stage alone is not a verdict.
+     - **Disqualified** → **knock out** (do not pursue).
+     - **Churned** → **OK / keep** (or route to a **winback** list) — churned is NOT a cold-list exclude.
+     - An **open deal** (any stage that isn't closed) → **knock out** regardless of lifecycle (active opportunity).
 
 8. **Rules of Engagement — only in "for a specific AE" mode:** first check the **`claude_roe_*` stamp** on
    the contact. **Only a fresh + matching `cleared` stamp** (`claude_roe_cleared_for` == the intake AE's

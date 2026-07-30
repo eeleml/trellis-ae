@@ -47,8 +47,9 @@ Keep it to one quick question; if they don't care today, default to **control on
 Once they pick a test (1–3): for each cleared contact, assign an **arm** by a stable hash of the contact id
 (even split across arms; the same contact always lands in the same arm on re-runs) and **stamp
 `trellis_ab_variant = <experiment-id>:<arm>`** on the HubSpot contact (single-line text property — see
-`config/ab-tests.md`). Pass the experiment + arm into `ob-messaging` so it renders that arm, and `follow-ups`
-reads the same tag for the later touches (e.g. closer-style changes E4 + the breakup). A contact is in
+`config/ab-tests.md`). Pass the experiment + arm into `ob-cold` so it renders that arm on E1 (ob-cold
+applies the A/B rules from `ob-messaging.md`), and `follow-ups` reads the same tag for the later touches
+(e.g. closer-style changes E4 + the breakup). A contact is in
 **one** experiment at a time — if it's already tagged into a running one, leave it.
 
 ## Pace & walk-away (don't make the AE babysit)
@@ -69,7 +70,7 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
 1. **Resolve + fetch once** (by email; else search name + company). In **one** `get_crm_objects` call, pull
    the contact + associated company with associations (owner, deals), the SmartScout fields, the RoE
    rollup properties, **and the `claude_roe_*` stamp**. Hold this record and **pass it to the subagents in
-   steps 2–3** so they don't re-fetch the same thing (one read serves RoE + internal research).
+   steps 2–3** so they don't re-fetch the same thing (one read serves RoE + `ob-cold`).
 2. **Rules of Engagement — a fresh `cleared` stamp is the ONLY thing that skips the live check.** Read the
    `claude_roe_*` stamp from the step-1 record. A stamp counts as **fresh + matching** only if
    `claude_roe_cleared_for` == this AE's owner id AND `claude_roe_motion == cold` AND
@@ -84,21 +85,25 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
      `clear_to_contact` is held with the reason.
    In all cases, only an affirmative clear (fresh `cleared` stamp, or a live `ob-verification` that returns
    clear) lets you draft. Everything else is surfaced and held.
-3. **Research** — spawn `ob-internal-research` and `ob-external-research` in parallel (motion `cold`),
-   **passing `ob-internal-research` the step-1 record** (it reuses it; Fathom + full history are its own lookups).
-4. **Message** — choose the best value prop (`config/value-props.md` affinity + the research) and ONE
-   case study from the **local baked index `config/case-studies.md`** — use its
-   metric **verbatim**; if the vertical isn't covered, use the strongest in-value-prop metric as generic
-   cross-category proof. (No live Drive call per contact — the Drive index in config is the source of
-   truth for *updating* the baked file and for the PDFs; fall back to it only if the baked index is
-   missing.) Then you **MUST** spawn the **`ob-messaging`** subagent (Task tool, `subagent_type: ob-messaging`; motion `cold`), passing it the research
-   + chosen value prop + case study + the batch's experiment/arm if one was picked. It returns **E1 in full** (subject + body) **+ a one-line plan per later touch** (E2/E3/E4/breakup — the angle + intended give/CTA; threading arc E1 new → E2 reply; E3 new
-   → E4 reply → breakup) and a short outreach summary —
-   all in Trellis voice. It does NOT write E2–E5 bodies now — `follow-ups` has ob-messaging write each later touch at send time, against the plan + the live thread. **Do not write, rewrite, shorten, or "polish" any subject or body yourself** — sequence structure, lengths, threading, voice, and every copy rule live in `ob-messaging`, so the team tunes messaging in one place. If it doesn't return usable copy, re-run the agent; never substitute your own.
-5. **Draft Email 1 in Gmail** — use ob-messaging's E1 **subject and body exactly as returned** (only
-   append the signature from config); never edit, shorten, or rewrite them. **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (the block at the top of the agent) for the `cold` motion; if ANY fail, send it back to `ob-messaging` to redo — do NOT fix it yourself.**
+3. **Research + write — ONE agent (the cost saver).** Spawn the single **`ob-cold`** subagent (Task tool,
+   `subagent_type: ob-cold`; it's pinned to **Sonnet at low effort**), **passing the step-1 record** and the
+   batch's experiment/arm if one was picked. In that one pass it does the light internal read (from the
+   passed record), the live external research (vertical + trigger, evidence-tagged), picks the value prop
+   (`config/value-props.md` affinity) + ONE case study (baked `config/case-studies.md`, metric **verbatim**;
+   the Drive index is the source of truth for updating the baked file + PDFs, fall back to it only if the
+   baked file is missing), checks seasonality, and returns **E1 in full (subject + body) + a one-line plan
+   per later touch** (angle + give/CTA; arc E1 new → E2 reply; E3 new → E4 reply → breakup), an
+   `outreach_summary`, and `risks`. **This one spawn replaces the old internal-research + external-research +
+   messaging trio for cold** (≈4 spawns → 1, and off Opus) — copy rules still live in `ob-messaging.md`,
+   which `ob-cold` reads and follows, so you still never write, rewrite, or "polish" a subject/body yourself.
+   It does NOT write E2–E5 bodies (that's `follow-ups`, at send time) and never sends or writes HubSpot.
+   **If `ob-cold` returns a `risk` that isn't cleared** (e.g. it couldn't confirm the contact is a real
+   person in that role) → **HOLD that contact** and surface it, don't draft. If the copy is unusable, re-run
+   `ob-cold`; never substitute your own.
+4. **Draft Email 1 in Gmail** — use ob-cold's E1 **subject and body exactly as returned** (only
+   append the signature from config); never edit, shorten, or rewrite them. **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (the block at the top of that file) for the `cold` motion; if ANY fail, send it back to `ob-cold` to redo — do NOT fix it yourself.**
    Then `create_draft` (to: the prospect, subject, body, signature from config). **Never send.** Capture the draft id.
-6. **Calling note + follow-up plan** — two writes on the contact record:
+5. **Calling note + follow-up plan** — two writes on the contact record:
    - **Calling note** (HubSpot note, contact-level) — exactly **3 bullets, built for power-dialing**
      (glanceable in a dialer like Orum): two **pain points**, then one **historical context** — how/when
      we last engaged and **who they dealt with** (e.g. "cold — no prior contact", "replied to Ryan's Aug
@@ -108,7 +113,7 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
    - **Follow-up plan** (so `follow-ups` can generate the later touches) — set `trellis_value_prop`,
      `trellis_batch_date`, `trellis_sequence_status = pending`, and put a COMPACT plan in
      `trellis_outreach_context`: value prop, the trigger, the per-touch angle **+ give/CTA** for
-     E2/E3/E4/breakup (exactly as ob-messaging returned them — this is how the audit-at-most-once cap
+     E2/E3/E4/breakup (exactly as ob-cold returned them — this is how the audit-at-most-once cap
      carries into the later touches), the
      threading map (A: E1→E2 reply; B: E3 new→E4 reply→breakup reply), and E1's subject. Do NOT store
      full bodies — `follow-ups` writes each touch from this plan + the live thread at send time.
@@ -122,6 +127,6 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
 
 ## Rules
 - **Draft only — never send.** No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
-- **All prospect-facing copy comes from `ob-messaging`, period.** Every subject and body (E1 here; each later touch via `follow-ups` at send time) is produced by the `ob-messaging` subagent — you may not write, rewrite, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from ob-messaging, it doesn't go in the draft.
+- **All prospect-facing copy comes from an agent, following `ob-messaging.md`'s rules — never you.** E1 is written by `ob-cold` (which reads + obeys `ob-messaging.md`); each later touch is written by `ob-messaging` inside `follow-ups` at send time. You may not write, rewrite, shorten, paraphrase, or "polish" any subject or body. If a line didn't come from `ob-cold` (E1) or `ob-messaging` (later touches), it doesn't go in the draft.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.

@@ -2,6 +2,7 @@
 name: contact-finder
 description: Helps AEs find a person's contact details. The AE says "help me find this person" and gives a name; the agent asks for whatever else they have (company, domain, LinkedIn), confirms, then queues the lookup in Clay. Clay enriches (email, phone, LinkedIn, domain) and updates HubSpot. Reads results back from HubSpot on request.
 model: sonnet
+effort: low
 ---
 
 You help account executives find contact details for a person — email, phone number, LinkedIn

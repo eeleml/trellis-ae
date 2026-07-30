@@ -20,7 +20,8 @@ and meetings, not writing email.
 | `/trellis-ae:local-visits` *(beta)* | Door-knock prep: text-message drafts (for your phone) + one lunch-invite email (Gmail draft) + walk-in talking points + a HubSpot visit task on your committed date |
 | `/trellis-ae:sanity-check` | Audits the plugin's own skills/agents for sound process + outputs (structure, invariants, cross-agent consistency); read-only, proposes fixes. Run before a release |
 | `contact-finder` (agent) | "Help me find this person" → Clay enrichment → HubSpot (reads `clay_mobile`) |
-| `ob-verification`, `ob-internal-research`, `ob-external-research`, `ob-messaging` (agents) | Shared RoE, research, and copywriting the motion skills spawn |
+| `ob-cold` (agent) | **The single cold-motion agent** — research + value-prop/case-study pick + Email 1 + follow-up plan in one pass (Sonnet, low effort). Cold-outbound spawns just this per contact instead of the research+messaging trio, so a cold list drafts at ~a third the cost. Copy rules still live in `ob-messaging` |
+| `ob-verification`, `ob-internal-research`, `ob-external-research`, `ob-messaging` (agents) | Shared RoE, research, and copywriting; used by closed-lost / local / qualify (and `ob-messaging` writes the later follow-up touches) |
 
 **Each AE keeps 3 chats — one per motion** (cold / closed-lost / local) — and runs the matching skill there.
 

@@ -10,7 +10,7 @@ and meetings, not writing email.
 |---|---|
 | `/trellis-ae:setup` | **Run once after install** — checks connectors, finds your HubSpot owner ID, saves your signature, takes the Clay webhook, writes your config |
 | `/trellis-ae:qualify` | Vet a list before assigning/working it → checks email/right-person/employment/deliverability/sequence, stamps each **contact's** `icp_lead_stage` (verified / failed) + buckets revisits. The Verify stage after `icp-sourcing`. Standalone, or a pre-gate inside cold-outbound |
-| `/trellis-ae:cold-outbound` | Paste your cold list → research + RoE → Email 1 drafted in Gmail (+ follow-up plan) |
+| `/trellis-ae:cold-outbound` | Paste your cold list → research + RoE → Email 1 delivered for review (+ follow-up plan). If Instantly is set up, the batch is approved in a Google Doc / chat then pushed to your **paused Instantly campaign**; otherwise it's a **Gmail draft** |
 | `/trellis-ae:closed-lost` | Re-engagement: deal-history + Fathom-first → Gmail draft; owner-aware, job-change & lost-reason driven. Reads the **full** lost reason + cross-references **`config/whats-new.md`** (releases since you last spoke); previews the angle + E1 in chat before drafting |
 | `/trellis-ae:follow-ups` | Finds your sent Email 1's and drafts the next in-thread touch on cadence; skips anyone who replied |
 | `/trellis-ae:accountability` | Checks Email 1's are sent, follow-ups + calls are happening, replies handled → flags gaps per AE |
@@ -44,8 +44,12 @@ Then **turn on auto-update** so you stay current automatically: `/plugin` → **
 *(Optional: set `APOLLO_API_KEY` only if you use the Apollo enrichment fallback.)*
 
 ## How email works here
-- Everything is a **Gmail draft** — you review and send. The chat is for kicking off the list; the review surface is your inbox.
-- **Follow-ups are in-thread replies.** Email 1 drafts first; Email 2/3/breakup can only thread off a *sent* message, so `follow-ups` drafts them as replies after you send, on a T+2/4/6 cadence, and **skips anyone who already replied.**
+- **Two delivery paths for cold, by setup:**
+  - **Instantly** (if `config.instantly.campaign_id` is set — cold only): the batch is approved in a **Google Doc or chat**, then the approved Email 1's are pushed into your **paused Instantly campaign**. You do a final review in Instantly and send from there; Instantly runs the cadence + threading. Replies + the "we already called them" stop-guard are handled by the central `instantly-sync` job. *(Phase 1 pushes E1; automated E2–E5 late-fill is the next build.)*
+  - **Gmail** (default when Instantly isn't set up, and always for **closed-lost / local**): everything is a **Gmail draft** — you review and send from your inbox.
+- Nothing is ever sent automatically — Instantly campaigns are pushed **paused**, Gmail items are **drafts**.
+- **Gmail follow-ups are in-thread replies.** Email 1 drafts first; E2/E3/breakup thread off a *sent* message, so `follow-ups` drafts them as replies on a T+2/4/6 cadence and **skips anyone who replied.** (Instantly-pushed cold is marked so `follow-ups` leaves it to Instantly.)
+- **Instantly setup:** run `/trellis-ae:setup` — it installs the connector, takes your API key (`~/.instantly-key`, never committed), and records your campaign + mailbox.
 
 ## Scheduling (set up after install — plugins can't ship cron)
 Use `/schedule` to run `follow-ups` and `accountability` on a cadence (e.g., follow-ups each weekday

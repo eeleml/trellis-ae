@@ -5,5 +5,6 @@
   "ae_name": "Your Name",
   "outbound_signature": "Your Name\nTrellis",
   "case_study_index": { "type": "drive_file", "file_id": "SHARED_DRIVE_FILE_ID" },
-  "alerts_channel": "slack-channel-for-accountability-or-blank"
+  "alerts_channel": "slack-channel-for-accountability-or-blank",
+  "instantly": { "campaign_id": "YOUR_COLD_CAMPAIGN_ID_or_omit_block", "mailbox": "you@yoursendingdomain.com" }
 }

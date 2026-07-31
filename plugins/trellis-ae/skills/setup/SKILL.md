@@ -1,6 +1,6 @@
 ---
 name: setup
-description: One-time onboarding for the trellis-ae plugin — run once after installing. Checks your connectors (HubSpot, Gmail, Fathom, Google Drive), finds your HubSpot owner ID, saves your email signature, takes the team Clay webhook, locates the case-study index in Drive, and writes ~/.trellis-ae/config.json. Use when an AE first installs trellis-ae or says "set up trellis."
+description: One-time onboarding for the trellis-ae plugin — run once after installing. Checks your connectors (HubSpot, Gmail, Fathom, Google Drive), finds your HubSpot owner ID, saves your email signature, takes the team Clay webhook, optionally sets up Instantly (key + campaign) for pushing cold emails, locates the case-study index in Drive, and writes ~/.trellis-ae/config.json. Use when an AE first installs trellis-ae or says "set up trellis."
 ---
 
 # Setup (run once)
@@ -56,7 +56,24 @@ MCP can't read list membership reliably). Ask them to paste the **read-only list
 ✅/❌, never the token. *(If `~/.hubspot-token` isn't set, the skills fall back to Claude in Chrome, which
 caps at the rendered rows — so the token is strongly preferred. Admins who run `assigner` use a read+write token.)*
 
-## 7. Write the config
+## 7. Instantly (optional — push cold emails to Instantly instead of Gmail)
+Only if this AE sends **cold** outbound through Instantly (cold only — closed-lost / local stay Gmail).
+Skip it otherwise; `cold-outbound` falls back to Gmail drafts when this isn't configured.
+- **Install the connector to a stable path** the skills can call: copy this plugin's `tools/instantly.py`
+  to `~/.trellis-ae/instantly.py`. `mkdir -p ~/.trellis-ae && cp "<plugin root>/tools/instantly.py"
+  ~/.trellis-ae/instantly.py` (the plugin root is two levels up from this skill's directory).
+- **API key:** ask them to paste their Instantly v2 API key (Instantly → Settings → Integrations → API;
+  request scope **leads read/write + campaigns read + email send**, NOT admin/billing). Save WITHOUT
+  echoing: `printf '%s' "PASTED_KEY" > ~/.instantly-key && chmod 600 ~/.instantly-key`. Verify without
+  printing it: `curl -s -o /dev/null -w '%{http_code}' -H "Authorization: Bearer $(cat ~/.instantly-key)"
+  "https://api.instantly.ai/api/v2/campaigns?limit=1"` → **200** good · **401** bad key · **403** scope/blocked.
+  Never print the key.
+- **Campaign + mailbox:** run `python3 ~/.trellis-ae/instantly.py campaigns` to list campaigns; have them
+  pick their standing **cold campaign** (the "Cold – <AE>" one built with the E1/E2 skeleton — subject/body
+  variables on step 1, blank subject on the follow-up steps so they thread) and confirm their **sending
+  mailbox** (e.g. `ryan@trellisseller.com`). Capture the campaign id + mailbox for the config.
+
+## 8. Write the config
 Create `~/.trellis-ae/` if needed and write `~/.trellis-ae/config.json`:
 ```json
 {
@@ -65,11 +82,13 @@ Create `~/.trellis-ae/` if needed and write `~/.trellis-ae/config.json`:
   "ae_name": "<name>",
   "outbound_signature": "<signature>",
   "case_study_index": { "type": "drive_file", "file_id": "<resolved>" },
-  "alerts_channel": "<slack channel, or blank>"
+  "alerts_channel": "<slack channel, or blank>",
+  "instantly": { "campaign_id": "<their cold campaign id>", "mailbox": "<their sending mailbox>" }
 }
 ```
+Omit the `instantly` block entirely if they didn't set up step 7 — `cold-outbound` then drafts to Gmail.
 
-## 8. Schedule + first run
+## 9. Schedule + first run
 - Have them set the recurring jobs via `/schedule`: **follow-ups at 6 AM weekdays** (and **accountability**
   weekly if they run it).
 - Confirm they're ready and suggest a first run: "`/trellis-ae:cold-outbound`, then paste ~25 contacts."

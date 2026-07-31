@@ -1,13 +1,16 @@
 ---
 name: cold-outbound
-description: Draft a cold Amazon outbound email sequence for a pasted list of contacts. Researches each prospect, checks Rules of Engagement, selects a value prop + case study, and leaves Email 1 as a Gmail draft for the AE to review and send. Use when an AE pastes a list of cold prospects ("here's my cold list for the week").
+description: Draft a cold Amazon outbound email sequence for a pasted list of contacts. Researches each prospect, checks Rules of Engagement, selects a value prop + case study, and delivers Email 1 for the AE to review and send — pushed into their Instantly campaign (after a Google-Doc/chat approval) if Instantly is set up, otherwise left as a Gmail draft. Use when an AE pastes a list of cold prospects ("here's my cold list for the week").
 ---
 
 # Cold Outbound
 
-You turn a pasted list of cold prospects into **reviewed-ready Gmail drafts** — one personalized
-Email 1 per contact — so the AE spends their time reviewing and sending, not writing. You never send
-anything; you draft. Keep the AE's time in chat minimal: do the work, then hand back a short summary.
+You turn a pasted list of cold prospects into **reviewed-ready Email 1's** — one personalized Email 1 per
+contact — so the AE spends their time reviewing and sending, not writing. **Delivery depends on setup:** if
+the AE has Instantly configured (`config.instantly.campaign_id`), you get the batch **approved in a Google
+Doc (or chat) and push the approved ones into their paused Instantly campaign**; otherwise you leave each as
+a **Gmail draft**. Either way you **never send** — the AE reviews and sends (in Instantly or Gmail). Keep
+the AE's time in chat minimal: do the work, then hand back a short summary.
 
 ## Input
 The AE gives you the list one of two ways:
@@ -22,8 +25,8 @@ The AE gives you the list one of two ways:
 - **Pasted contacts** — emails, or names + companies.
 **Always count the actual contacts and tell them the number — never assume a count.** Process the whole
 list — the AE does NOT need to hand you a smaller batch. It runs in capped concurrency waves (see
-**Pace & walk-away**) and drafts land in Gmail for later review, so a big list is fine; just give the
-time estimate up front.
+**Pace & walk-away**) and outputs land for later review (Gmail drafts, or — on the Instantly path — an
+approval doc, then a push into the paused campaign), so a big list is fine; just give the time estimate up front.
 
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (portal id, the AE's HubSpot owner id, case-study
@@ -100,9 +103,27 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
    **If `ob-cold` returns a `risk` that isn't cleared** (e.g. it couldn't confirm the contact is a real
    person in that role) → **HOLD that contact** and surface it, don't draft. If the copy is unusable, re-run
    `ob-cold`; never substitute your own.
-4. **Draft Email 1 in Gmail** — use ob-cold's E1 **subject and body exactly as returned** (only
-   append the signature from config); never edit, shorten, or rewrite them. **First gate E1 against `ob-messaging`'s HARD CONSTRAINTS (the block at the top of that file) for the `cold` motion; if ANY fail, send it back to `ob-cold` to redo — do NOT fix it yourself.**
-   Then `create_draft` (to: the prospect, subject, body, signature from config). **Never send.** Capture the draft id.
+4. **Deliver — Instantly if configured, else Gmail.** In BOTH paths, first **gate ob-cold's E1 against
+   `ob-messaging`'s HARD CONSTRAINTS** (top of that file) for `cold`; if ANY fail, send it back to `ob-cold`
+   (never fix it yourself). Use its subject + body **exactly** (append only the config signature). If
+   `ob-cold` returned an uncleared `risk` (e.g. unconfirmed contact), **HOLD** that contact — don't deliver it.
+   - **Instantly configured** (config `instantly.campaign_id` is set) — the cold default. **Don't deliver as
+     you go; collect the whole batch, then get approval BEFORE anything reaches Instantly** (you are the gate
+     — Instantly only ever holds approved copy):
+     1. Write all cleared E1s to a **Google Doc** (`create_file`): per contact — name · company · subject ·
+        body · the give — each with an `APPROVE:` line; plus a compact chat summary of the batch.
+     2. The AE approves **either way**: marks `yes` / `edit <note>` / `no` on the Doc's APPROVE lines (re-read
+        with `read_file_content` and parse them) **or** tells you in chat ("approve A, B; hold C"). Route any
+        `edit` back through `ob-cold` — never hand-edit copy.
+     3. **Push only the approved.** Write them to a temp JSON (`[{email,first,last,company,e1_subject,e1_body}]`)
+        and run `python3 ~/.trellis-ae/instantly.py push-batch <instantly.campaign_id> <that.json>` — each E1
+        rides as the lead's `e1_subject`/`e1_body` and the campaign's step 1 merges it. The campaign stays
+        **paused**; **never activate it** — the AE does a final review in Instantly and sends there. Report
+        the campaign link + pushed/held counts.
+   - **Instantly NOT configured** — today's behavior: `create_draft` each E1 into Gmail (to: the prospect,
+     subject, body, signature). **Never send;** the AE reviews + sends from Gmail. Capture the draft id.
+   *(Phase 1 pushes **E1 only**. Automated E2–E5 late-fill into the Instantly campaign is the next build; the
+   plan you store in step 5 is what that will render from.)*
 5. **Calling note + follow-up plan** — two writes on the contact record:
    - **Calling note** (HubSpot note, contact-level) — exactly **3 bullets, built for power-dialing**
      (glanceable in a dialer like Orum): two **pain points**, then one **historical context** — how/when
@@ -110,8 +131,8 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
      email", "demo with Fahim 5/12", "met Ethan at Prosper Show"). Name the prior rep/person when there's
      a real prior interaction; otherwise "cold — no prior contact." **Never put internal CRM ownership in
      the note** (no "owned by you / [rep]") — it isn't dialer-relevant. One short line each, no preamble.
-   - **Follow-up plan** (so `follow-ups` can generate the later touches) — set `trellis_value_prop`,
-     `trellis_batch_date`, `trellis_sequence_status = pending`, and put a COMPACT plan in
+   - **Follow-up plan** (so the later touches can be generated) — set `trellis_value_prop`,
+     `trellis_batch_date`, and the sequence status by delivery channel: **Gmail-drafted → `trellis_sequence_status = pending`** (the Gmail `follow-ups` skill picks these up); **Instantly-pushed → `trellis_sequence_status = instantly`** (so the Gmail `follow-ups` skill skips them — their later touches run in the Instantly campaign; the automated E2–E5 late-fill is the next build). Put a COMPACT plan in
      `trellis_outreach_context`: value prop, the trigger, the per-touch angle **+ give/CTA** for
      E2/E3/E4/breakup (exactly as ob-cold returned them — this is how the audit-at-most-once cap
      carries into the later touches), the
@@ -119,14 +140,19 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
      full bodies — `follow-ups` writes each touch from this plan + the live thread at send time.
 
 ## Hand back (keep it short)
-- "Drafted **N** Email 1's in your Gmail — review and send." 
-- "**M** flagged, not drafted:" list each with the one-line RoE reason (owner / active deal / replied).
-- Reminder: "Follow-ups draft on cadence once you've sent — **Email 2** replies to Email 1; **Email 3**
-  opens a NEW thread; **Email 4** replies to Email 3; the **breakup** replies on that thread. Run
-  `/trellis-ae:follow-ups` (or let the scheduled check do it). Anyone who replies is auto-skipped."
+- **Instantly path:** "Pushed **N** approved Email 1's into your Instantly campaign (**paused**) — do a final
+  review in Instantly and send from there. **H** held (not approved / flagged). [campaign link]." Note:
+  later touches run in Instantly; the automated E2–E5 late-fill isn't wired yet (next build), and reply
+  handling + the "we already called them" stop-guard run in the central `instantly-sync` job.
+- **Gmail path:** "Drafted **N** Email 1's in your Gmail — review and send." + the follow-ups reminder:
+  "Follow-ups draft on cadence once you've sent — **E2** replies to E1; **E3** opens a NEW thread; **E4**
+  replies to E3; the **breakup** replies on that thread. Run `/trellis-ae:follow-ups` (or the scheduled
+  check). Anyone who replies is auto-skipped."
+- Either path: "**M** flagged, not delivered:" list each with the one-line RoE / risk reason (owner /
+  active deal / replied / unconfirmed contact).
 
 ## Rules
-- **Draft only — never send.** No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
+- **Deliver-for-review only — never send.** Instantly path = push into a **paused** campaign (never activate); Gmail path = an unsent draft. The AE reviews and sends. No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
 - **All prospect-facing copy comes from an agent, following `ob-messaging.md`'s rules — never you.** E1 is written by `ob-cold` (which reads + obeys `ob-messaging.md`); each later touch is written by `ob-messaging` inside `follow-ups` at send time. You may not write, rewrite, shorten, paraphrase, or "polish" any subject or body. If a line didn't come from `ob-cold` (E1) or `ob-messaging` (later touches), it doesn't go in the draft.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.

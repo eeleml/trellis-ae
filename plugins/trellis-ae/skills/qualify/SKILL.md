@@ -133,6 +133,24 @@ offer to batch it in chunks.
      marketing/ecom). KEEP "**Marketing** Operations" (a marketing function). (2026-07-27)
    - **Sales managers** — National / Regional / Territory / Area / generic "Sales Manager" → exclude. KEEP
      "**Ecommerce** Sales Manager" (ecommerce = the buyer; Ethan: "good/great option"). (2026-07-27)
+   - **Back-office / non-decision roles (Ethan 2026-07-28 audit).** Executive/Administrative Assistant, Compliance,
+     Customer Support / pure CX (Customer Experience Specialist), Inventory, Private Equity / fund / investor
+     roles, and non-ecommerce General Managers (e.g. a restaurant GM) → **exclude**. Not ecom decision-makers.
+     (Ecommerce Operations IS ok — Ethan keeps "eCommerce Operations" titles.)
+   - **Agencies that also sell (have a seller_id) + aggregators/house-of-brands.** ProMerit, BigFly, Venture Forge
+     ("Amazon Agency for Brands"), Accenture (consultancy), Pattern Brands / Thrasio / Perch (house-of-brands
+     aggregators), and any "trading"/"distribution" holding co (e.g. Everest Global Trading) → **exclude** even
+     though a seller_id is present. seller_id alone does NOT prove a single-brand seller. (Ethan 2026-07-28.)
+   - **Fractional / consultant / freelance / advisor roles (Ethan 2026-07-28).** "Fractional CMO/CMO,"
+     "Marketing Consultant," "Fractional Brand/Marketing Director," "Freelance ___," "Advisor" → **exclude**.
+     They're not permanent brand employees (they serve multiple clients via their own shop), and their HubSpot
+     `company` often points to their consultancy (e.g. "LTV Approach," "New Edge Agency") not the brand — a
+     tell of a company-field-vs-association mismatch. Fail.
+   - **Territory / regional / area / field roles — even when titled "Brand Manager" (Ethan 2026-07-28).**
+     "Territory Brand Manager," "Regional Brand/Marketing Manager," "Area Manager," "Field ___," or any
+     geo-scoped title (e.g. "…Iberia & Latam," "…West Region") → **exclude**. A territory/region assignment
+     signals a **retail / in-field** role (walking store accounts), NOT ecommerce/Amazon — the "Brand Manager"
+     label is misleading. Fail regardless of the noun; the geography is the tell.
    - **Retired** — any title containing "retired."
    - **Title ≠ company — it's the ROLE that's out, not the account.** A fine-ICP company can employ
      out-of-scope people: keep the company, fail the person (e.g. Constellation Brands stays as an

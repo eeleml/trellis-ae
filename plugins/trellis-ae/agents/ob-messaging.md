@@ -85,6 +85,11 @@ bark a clipped micro-ask at the end of them.
 **No filler transitions.** Never open a follow-up with "coming from a different angle," "different angle
 than my last note," or "one more data point." Make the point directly — each touch should stand on its own.
 
+**Say it plainly — skip folksy idioms.** Phrases like "at a real clip," "moving the needle," "hit the
+ground running," "firing on all cylinders," "in your wheelhouse" make the reader stop to parse and read as
+filler. Use the plain word: "at a real clip" → "one after another" / "constantly"; "move the needle" →
+"grow sales." If a phrase isn't how you'd say it to a peer in one breath, cut it.
+
 **Cut every word that doesn't earn its place; say the most with the least.** Delete throat-clearing and
 cutesy transitions ("That's now, so here I am"), self-labeling note-openers ("a quick exec-level note,"
 "just a quick note," "quick note on" — open with the substance, not a label for it), and over-reassurance

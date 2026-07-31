@@ -182,8 +182,11 @@ Constraints, on top of every rule above:
   today**, seen as a scheduled workflow. Never "start a trial" pressure in a cold touch.
 
 ## Structure by motion
-**cold** — Variant A (control): trigger → value prop → case-study proof. **Design the full 5-touch arc, but write ONLY E1 in full** (subject + body). For E2/E3/E4/breakup return a one-line plan each — the angle + the intended give/CTA — not bodies: the calling skill stores the plan, and `follow-ups` brings each later touch back to you at send time (motion `follow_up`) so it's written against the live thread. Full E2–E5 bodies written now would be thrown away. Plan the gives across the whole arc here — this is where the audit-at-most-once-per-sequence cap gets enforced.
-**Keep E1 tight — hard cap ~70 words; shorter wins. Count the words and cut to fit.** Per-touch spec (E1 written now; E2–breakup rendered later via `follow_up`, to these same caps):
+**cold** — Variant A (control): trigger → value prop → case-study proof. **Design the full 5-touch arc; the output scope depends on who's calling:**
+- **Central pre-write** (`write-sequences` → `ob-cold`, the default now): write **all five touches in full** — E1 (subject + body), E2 (body), E3 (subject + body), E4 (body), breakup (body). They're stored on the contact and pushed to Instantly up front, so nothing is discarded.
+- **Legacy Gmail path**: write **E1 in full + a one-line plan** (angle + give/CTA) for E2–breakup, which `follow-ups` regenerates at send time against the live thread.
+Either way, **plan the gives across the whole arc — an audit CTA at most once per sequence** (this is where that cap is set).
+**Keep every touch tight — E1 hard cap ~70 words; shorter wins. Count and cut.** Per-touch spec (same caps whether written in full now or rendered later):
 - **E1 — new thread:** hyper-personalized opener on the trigger. **≤70 words.**
 - **E2 — reply to E1:** value prop + the case-study stat. **≤80 words** (the one touch allowed to run longer, for the proof).
 - **E3 — new thread, fresh subject:** different angle (peer/competitor or category trend). **≤70 words.**
@@ -240,11 +243,12 @@ arm** (from `config/ab-tests.md`), render THAT arm's one change and keep everyth
 If no experiment/arm is passed, write the control. Never invent an experiment or change more than the named arm.
 
 ## Return
-- `cold` / `closed_lost`: **E1 in full** (subject + body) + a one-line plan per later touch (E2/E3/E4/
-  breakup — angle + intended give/CTA, so the audit cap survives into `follow-ups`) + a 2–3 sentence
-  `outreach_summary` for the calling note. No E2–E5 bodies — those are written at send time via `follow_up`.
-  **The plan line for the proof touch carries the case-study metric verbatim** (the numbers live in a plan
-  line, not E1), so `follow_up` renders it exactly and the audit/proof survive the handoff.
+- `cold`: **central pre-write** → all five touches in full (E1 subj+body, E2 body, E3 subj+body, E4 body,
+  breakup body) + a 2–3 sentence `outreach_summary`. **Legacy Gmail path** → E1 in full + a one-line plan
+  (angle + give/CTA) per later touch + `outreach_summary` (the proof touch's plan line carries the
+  case-study metric verbatim so `follow_up` renders it exactly).
+- `closed_lost`: E1 in full + a one-line plan per later touch (angle + give/CTA; the proof touch's line
+  carries the metric verbatim) + `outreach_summary`. `follow-ups` writes the later touches at send time.
 - `local`: the text-message drafts + the lunch-invite email (subject + body) + the walk-in talking
   points + a 2–3 sentence `outreach_summary` for the visit note.
 - `follow_up`: the single touch (subject + body).

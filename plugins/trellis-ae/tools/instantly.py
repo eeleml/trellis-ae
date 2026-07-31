@@ -98,17 +98,22 @@ def cmd_push(a):
 def cmd_push_batch(a):
     """Push a whole approved batch into a campaign from a JSON file (avoids shell-quoting long bodies).
        usage: push-batch <campaign_id> <leads.json>
-       leads.json = [{"email","first","last","company","e1_subject","e1_body"}, ...]
-       Creates each as a lead (paused campaign) with E1 in custom_variables. Prints per-lead result."""
+       leads.json = [{"email","first","last","company", + any touch vars:
+                      "e1_subject","e1_body","e2_body","e3_subject","e3_body","e4_body","e5_body"}, ...]
+       All non-standard keys become custom_variables (so it carries E1 only, or the full 5-touch set).
+       Creates each as a lead in the paused campaign. Prints per-lead result."""
     campaign, path = a[0], a[1]
     with open(path) as f:
         leads = json.load(f)
     results = []
     for L in leads:
+        # every key that isn't a standard lead field becomes a custom variable → carries
+        # all touches present (e1_subject, e1_body, e2_body, e3_subject/e3_body, e4_body, e5_body)
+        cv = {k: v for k, v in L.items() if k not in ("email", "first", "last", "company")}
         payload = {"campaign": campaign, "email": L["email"],
                    "first_name": L.get("first", ""), "last_name": L.get("last", ""),
                    "company_name": L.get("company", ""),
-                   "custom_variables": {"e1_subject": L["e1_subject"], "e1_body": L["e1_body"]}}
+                   "custom_variables": cv}
         try:
             r = api("POST", "/leads", body=payload)
             results.append({"email": L["email"], "lead_id": r.get("id"), "ok": True})

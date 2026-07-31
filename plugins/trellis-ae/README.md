@@ -10,7 +10,8 @@ and meetings, not writing email.
 |---|---|
 | `/trellis-ae:setup` | **Run once after install** — checks connectors, finds your HubSpot owner ID, saves your signature, takes the Clay webhook, writes your config |
 | `/trellis-ae:qualify` | Vet a list before assigning/working it → checks email/right-person/employment/deliverability/sequence, stamps each **contact's** `icp_lead_stage` (verified / failed) + buckets revisits. The Verify stage after `icp-sourcing`. Standalone, or a pre-gate inside cold-outbound |
-| `/trellis-ae:cold-outbound` | Paste your cold list → research + RoE → Email 1 delivered for review (+ follow-up plan). If Instantly is set up, the batch is approved in a Google Doc / chat then pushed to your **paused Instantly campaign**; otherwise it's a **Gmail draft** |
+| `/trellis-ae:write-sequences` | **(Admin, off-peak) Central pre-write.** Point it at a verified list → it researches each contact and writes all five cold emails (E1–E5) onto the contact's `trellis_email_*` properties. Token-heavy by design; run it on the admin machine so AEs don't pay for generation. Has an intent gate that steers casual runs to `cold-outbound` |
+| `/trellis-ae:cold-outbound` | Paste your cold list → **pulls the pre-written E1–E5** from the contacts (near-zero cost) → approve in a Google Doc / chat → **pushes the approved into your paused Instantly campaign** (all 5 touches) if Instantly is set up, else a **Gmail draft**. Flags anyone not yet pre-written |
 | `/trellis-ae:closed-lost` | Re-engagement: deal-history + Fathom-first → Gmail draft; owner-aware, job-change & lost-reason driven. Reads the **full** lost reason + cross-references **`config/whats-new.md`** (releases since you last spoke); previews the angle + E1 in chat before drafting |
 | `/trellis-ae:follow-ups` | Finds your sent Email 1's and drafts the next in-thread touch on cadence; skips anyone who replied |
 | `/trellis-ae:accountability` | Checks Email 1's are sent, follow-ups + calls are happening, replies handled → flags gaps per AE |
@@ -20,7 +21,7 @@ and meetings, not writing email.
 | `/trellis-ae:local-visits` *(beta)* | Door-knock prep: text-message drafts (for your phone) + one lunch-invite email (Gmail draft) + walk-in talking points + a HubSpot visit task on your committed date |
 | `/trellis-ae:sanity-check` | Audits the plugin's own skills/agents for sound process + outputs (structure, invariants, cross-agent consistency); read-only, proposes fixes. Run before a release |
 | `contact-finder` (agent) | "Help me find this person" → Clay enrichment → HubSpot (reads `clay_mobile`) |
-| `ob-cold` (agent) | **The single cold-motion agent** — research + value-prop/case-study pick + Email 1 + follow-up plan in one pass (Sonnet, low effort). Cold-outbound spawns just this per contact instead of the research+messaging trio, so a cold list drafts at ~a third the cost. Copy rules still live in `ob-messaging` |
+| `ob-cold` (agent) | **The single cold-motion writer** — research + value-prop/case-study pick + the full E1–E5 sequence in one pass (Sonnet, low effort), replacing the research+messaging trio. Spawned by `write-sequences` centrally; copy rules still live in `ob-messaging` |
 | `ob-verification`, `ob-internal-research`, `ob-external-research`, `ob-messaging` (agents) | Shared RoE, research, and copywriting; used by closed-lost / local / qualify (and `ob-messaging` writes the later follow-up touches) |
 
 **Each AE keeps 3 chats — one per motion** (cold / closed-lost / local) — and runs the matching skill there.

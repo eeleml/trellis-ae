@@ -37,10 +37,14 @@ Ask their **full name** and **work email**, then:
 ## 3. Email signature
 Ask how they sign emails (name + title). Keep it short.
 
-## 4. Case-study index (Drive)
+## 4. Case-study index (Drive) + stable local copy
 Search Drive (`search_files`) for the shared case-study index (a doc/sheet named like "Trellis Case
 Studies" / "Case Study Index"). Confirm the right file and capture its file ID. If they can't find it,
 note it and tell them to get the link from the admin.
+**Install the stable local copy** the write skills read (a fixed path, so nothing fuzzy-matches the wrong
+repo): `mkdir -p ~/.trellis-ae`, then if this plugin ships a baked `config/case-studies.md` copy it to
+`~/.trellis-ae/case-studies.md`; otherwise export the Drive index to that path. The skills read
+`~/.trellis-ae/case-studies.md` first, then the plugin's baked copy, then Drive.
 
 ## 5. Team Clay webhook (for contact-finder)
 Ask them to paste the team Clay webhook (pinned in Slack / from the admin). Save it WITHOUT echoing it:

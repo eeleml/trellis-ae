@@ -36,8 +36,11 @@ pushes whatever was written and carries the tag; `ab-testing` groups results by 
 
 ## Relies on
 - **Team config** `~/.trellis-ae/config.json`. Connected **HubSpot** MCP (records + the `trellis_email_*`
-  properties). Spawns **`ob-cold`** (the full-sequence writer). Case studies from the baked
-  `config/case-studies.md`. Load tools via ToolSearch as needed.
+  properties). Spawns **`ob-cold`** (the full-sequence writer). **Pass `ob-cold` the absolute paths** to
+  this plugin's `config/value-props.md`, `config/events-calendar.md`, `agents/ob-messaging.md` (resolve
+  them from this skill's own base directory — never let it search) and case studies from the stable
+  `~/.trellis-ae/case-studies.md` (fallback: the plugin's baked `config/case-studies.md`, then Drive).
+  Load tools via ToolSearch as needed.
 
 ## Per contact (capped waves — see Pace; it's a big off-peak run)
 1. **Fetch once** (by email; else name + company): contact + associated company with associations + SmartScout

@@ -133,6 +133,15 @@ offer to batch it in chunks.
      marketing/ecom). KEEP "**Marketing** Operations" (a marketing function). (2026-07-27)
    - **Sales managers** — National / Regional / Territory / Area / generic "Sales Manager" → exclude. KEEP
      "**Ecommerce** Sales Manager" (ecommerce = the buyer; Ethan: "good/great option"). (2026-07-27)
+   - **Partnerships roles (Ethan 2026-07-28) — unless a redeeming co-title.** "Partnerships
+     Manager/Lead/Director/Assistant", "Brand Partnerships", "Athlete Partnerships" → **exclude**, UNLESS the
+     same title also carries a real ecom/marketing-leadership signal (ecommerce/marketplace/amazon/digital/
+     growth/CMO/VP-or-Director of Marketing) — e.g. "Director Vertical Marketing & Global Partnership Head"
+     KEEPS (marketing leads), "Brand Partnership Lead" FAILS (pure partnerships = biz-dev, not a buyer).
+   - **Content roles (Ethan 2026-07-28).** Any title containing "Content" — Content Marketing
+     Specialist/Manager/Associate, Content Director, Digital Content Supervisor, Content Strategy — →
+     **exclude**, even blended ones ("Marketing, Content & Communications Manager", "Content Strategy +
+     Brand Marketing"). Content producers, not ecom decision-makers.
    - **Back-office / non-decision roles (Ethan 2026-07-28 audit).** Executive/Administrative Assistant, Compliance,
      Customer Support / pure CX (Customer Experience Specialist), Inventory, Private Equity / fund / investor
      roles, and non-ecommerce General Managers (e.g. a restaurant GM) → **exclude**. Not ecom decision-makers.

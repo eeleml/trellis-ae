@@ -1,17 +1,19 @@
 ---
 name: cold-outbound
-description: Draft a cold Amazon outbound email sequence for a pasted list of contacts. Researches each prospect, checks Rules of Engagement, selects a value prop + case study, and delivers Email 1 for the AE to review and send — pushed into their Instantly campaign (after a Google-Doc/chat approval) if Instantly is set up, otherwise left as a Gmail draft. Use when an AE pastes a list of cold prospects ("here's my cold list for the week").
+description: Work a cold Amazon outbound list. Pulls each prospect's pre-written 5-touch sequence, checks Rules of Engagement, gets it approved (Google Doc/chat), and pushes the approved sequence into the AE's Instantly campaign — the AE does the final review and sends from Instantly (never auto-sent). Cold delivery runs through Instantly, NOT Gmail drafts. Use when an AE pastes a list of cold prospects ("here's my cold list for the week").
 ---
 
 # Cold Outbound
 
 You turn a cold list into sent-ready outreach with **almost no generation on your side** — the five emails
 were **pre-written centrally** by `/trellis-ae:write-sequences` and stored on each contact. You **pull**
-them, get them **approved** (Google Doc or chat), and **push the approved ones into the AE's paused Instantly
-campaign** if Instantly is configured (`config.instantly.campaign_id`), otherwise drop E1 as a **Gmail
-draft**. You **never send** — the AE reviews and sends (in Instantly or Gmail). If a contact isn't
-pre-written, you **flag it** rather than silently run the expensive generation. Keep the AE's time in chat
-minimal: do the work, hand back a short summary.
+them, get them **approved** (Google Doc or chat), and **push the approved sequence into the AE's paused
+Instantly campaign**. **Cold delivery is Instantly, not Gmail** — the AE does the final review in Instantly
+and sends from there (Instantly handles the actual send + HubSpot logging). You **never send** and you
+**never activate** the campaign — the AE controls send in Instantly. **If Instantly isn't configured
+(`config.instantly.campaign_id` missing), STOP and have the AE set it up** (`/trellis-ae:setup`, the Instantly
+step) — do **not** fall back to Gmail drafts for cold. If a contact isn't pre-written, you **flag it** rather
+than silently run the expensive generation. Keep the AE's time in chat minimal: do the work, hand back a short summary.
 
 ## Input
 The AE gives you the list one of two ways:
@@ -26,15 +28,30 @@ The AE gives you the list one of two ways:
 - **Pasted contacts** — emails, or names + companies.
 **Always count the actual contacts and tell them the number — never assume a count.** Process the whole
 list — the AE does NOT need to hand you a smaller batch. It runs in capped concurrency waves (see
-**Pace & walk-away**) and outputs land for later review (Gmail drafts, or — on the Instantly path — an
-approval doc, then a push into the paused campaign), so a big list is fine; just give the time estimate up front.
+**Pace & walk-away**) and outputs land for later review (an approval doc, then a push into the paused
+Instantly campaign), so a big list is fine; just give the time estimate up front.
 
 ## Relies on (check once, ask only if missing)
 - **Team config** at `~/.trellis-ae/config.json` (portal id, the AE's HubSpot owner id, case-study
-  index pointer, signature). If absent, point them at `config/config.example.json` and ask them to
-  create it.
-- Connected MCPs: **Gmail** (drafting), **HubSpot** (records/RoE), **Fathom** (calls), and **Drive/
-  Notion** (case studies). Load tools via ToolSearch as needed.
+  index pointer, signature, **and the `instantly` block — `campaign_id` + `mailbox`**). If absent, point
+  them at `config/config.example.json` and ask them to create it.
+- **Instantly (required for cold delivery):** the connector at `~/.trellis-ae/instantly.py`, the API key at
+  `~/.instantly-key`, and `config.instantly.campaign_id`. All three are installed by `/trellis-ae:setup`
+  (Instantly step). If any is missing, STOP at the delivery step and route the AE to setup — don't Gmail-draft.
+- Connected MCPs: **HubSpot** (records/RoE), **Fathom** (calls), and **Drive** (approval doc + case studies).
+  Load tools via ToolSearch as needed. (Gmail isn't needed for cold — that's closed-lost / local.)
+
+## Preflight — verify Instantly BEFORE you touch the list (fail fast)
+Cold delivers through Instantly, so confirm the whole path is wired **before** doing any per-contact work —
+don't research and prep a 40-contact list only to hit a dead end at the push. Check, in order, and if any
+fails **STOP immediately** and tell the AE exactly what's missing + point to `/trellis-ae:setup` (Instantly step):
+1. **Config** — `~/.trellis-ae/config.json` exists and has `instantly.campaign_id` (+ `mailbox`).
+2. **Connector + key** — `~/.trellis-ae/instantly.py` exists and `~/.instantly-key` is set.
+3. **Live check** — run `python3 ~/.trellis-ae/instantly.py campaigns`. It must (a) authenticate (a 401/403
+   means a bad/missing key) and (b) return a list that **includes the configured `campaign_id`** (if the id
+   isn't in the list, the config points at a campaign this key can't see — flag it). 
+Only when all three pass do you start processing the list. One cheap call up front, and the AE hears about a
+setup problem in seconds instead of after the whole run.
 
 ## A/B variant (set at WRITE time, not here)
 The messaging variant is chosen when the sequence is **written** (`/trellis-ae:write-sequences`), because
@@ -44,10 +61,11 @@ written** and carries that tag through, so results still group by arm. A contact
 (Registry: `config/ab-tests.md`.)
 
 ## Pace & walk-away (don't make the AE babysit)
-This is draft-only — nothing is sent — so the AE never needs to watch the run. Work unattended:
+Nothing is sent from here — you push to a paused Instantly campaign for the AE's final review — so the AE
+never needs to watch the run. Work unattended:
 - **Set expectations once, before you start:** the contact count, a rough estimate (~1 min/contact), and
-  "you don't need to watch this — I'll draft each Email 1 into your Gmail and summarize when it's done;
-  come back and review then."
+  "you don't need to watch this — I'll pull and prep each sequence, drop them in an approval doc, and after
+  you approve I'll push them into your Instantly campaign (paused) for a final review there."
 - **Run in capped waves.** Process at most **4 contacts concurrently**, starting the next as each finishes.
   Same list, just metered so a big run doesn't spike the rate limit and stall on retries. Do **not** fan
   out the whole list at once.
@@ -86,11 +104,12 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
      (generation is the expensive path). List the not-pre-written contacts and offer: have the admin run
      `/write-sequences` on this list, **or** — only with the AE's explicit OK and a note that it costs more —
      spawn `ob-cold` to write that one now. Default is **flag + skip**.
-4. **Approve, then push all five to Instantly (or Gmail fallback).** First **gate E1 against `ob-messaging`'s
-   HARD CONSTRAINTS** (top of that file); if it fails, send that touch back to `ob-messaging` to rewrite —
-   never hand-edit.
-   - **Instantly configured** (config `instantly.campaign_id` is set) — the cold default. **Collect the batch,
-     get approval BEFORE anything reaches Instantly** (you are the gate — Instantly only ever holds approved copy):
+4. **Approve, then push all five to Instantly.** First **gate E1 against `ob-messaging`'s HARD CONSTRAINTS**
+   (top of that file); if it fails, send that touch back to `ob-messaging` to rewrite — never hand-edit.
+   **Cold delivery is Instantly only.** If `config.instantly.campaign_id` (or the key/connector) is missing,
+   **STOP here** and tell the AE to run `/trellis-ae:setup` (Instantly step) — do NOT draft to Gmail as a
+   fallback. Once Instantly is configured:
+   - **Collect the batch, get approval BEFORE anything reaches Instantly** (you are the gate — Instantly only ever holds approved copy):
      1. Write the batch to a **Google Doc** (`create_file`): per contact — name · company · **E1 subject +
         body in full**, then E2–E5 listed below it (they're pre-written) — each contact with an `APPROVE:`
         line. Plus a compact chat summary.
@@ -104,8 +123,6 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
         Each body rides as a custom variable; the campaign's 5 steps merge them (E1 + E3 open threads, E2/E4/
         breakup reply). **Never activate** — the AE reviews once more in Instantly and sends there. Report the
         campaign link + pushed/held counts.
-   - **Instantly NOT configured** → Gmail fallback: `create_draft` the **E1** into Gmail (subject, body,
-     signature); the later touches then run via the Gmail `follow-ups` cadence off the stored plan. **Never send.**
    *(Because all five bodies are pre-written and pushed up front, the Instantly campaign runs the full
    sequence natively — no late-fill.)*
 5. **Calling note + follow-up plan** — two writes on the contact record:
@@ -115,28 +132,24 @@ This is draft-only — nothing is sent — so the AE never needs to watch the ru
      email", "demo with Fahim 5/12", "met Ethan at Prosper Show"). Name the prior rep/person when there's
      a real prior interaction; otherwise "cold — no prior contact." **Never put internal CRM ownership in
      the note** (no "owned by you / [rep]") — it isn't dialer-relevant. One short line each, no preamble.
-   - **Sequence status** — set `trellis_batch_date` and the status by delivery channel: **Instantly-pushed
-     → `trellis_sequence_status = instantly`** (so the Gmail `follow-ups` skill skips them — their later
-     touches run natively in the Instantly campaign); **Gmail-drafted → `pending`** (the Gmail `follow-ups`
-     skill picks these up and drafts the later touches from the stored plan). The value prop, trigger, and
-     per-touch plan are **already on the contact** from `write-sequences` (`trellis_value_prop`,
-     `trellis_outreach_context`) — don't rewrite them. If you rewrote a touch at the approval gate, you
-     already updated its `trellis_email_*` property in step 4.
+   - **Sequence status** — set `trellis_batch_date` and **`trellis_sequence_status = instantly`** (the Gmail
+     `follow-ups` skill skips these — their later touches run natively in the Instantly campaign). The value
+     prop, trigger, and per-touch plan are **already on the contact** from `write-sequences`
+     (`trellis_value_prop`, `trellis_outreach_context`) — don't rewrite them. If you rewrote a touch at the
+     approval gate, you already updated its `trellis_email_*` property in step 4.
 
 ## Hand back (keep it short)
-- **Instantly path:** "Pushed **N** approved Email 1's into your Instantly campaign (**paused**) — do a final
-  review in Instantly and send from there. **H** held (not approved / flagged). [campaign link]." Note:
-  later touches run in Instantly; the automated E2–E5 late-fill isn't wired yet (next build), and reply
-  handling + the "we already called them" stop-guard run in the central `instantly-sync` job.
-- **Gmail path:** "Drafted **N** Email 1's in your Gmail — review and send." + the follow-ups reminder:
-  "Follow-ups draft on cadence once you've sent — **E2** replies to E1; **E3** opens a NEW thread; **E4**
-  replies to E3; the **breakup** replies on that thread. Run `/trellis-ae:follow-ups` (or the scheduled
-  check). Anyone who replies is auto-skipped."
-- Either path: "**M** flagged, not delivered:" list each with the one-line RoE / risk reason (owner /
-  active deal / replied / unconfirmed contact).
+- "Pushed **N** approved sequences (all 5 touches) into your Instantly campaign (**paused**) — do a final
+  review in Instantly and send from there. **H** held (not approved / flagged). [campaign link]." The full
+  E1–E5 sequence runs natively in Instantly (E1+E3 open threads, E2/E4/breakup reply); reply handling + the
+  "we already called them" stop-guard run in the central `instantly-sync` job.
+- "**M** flagged, not delivered:" list each with the one-line RoE / risk reason (owner / active deal /
+  replied / unconfirmed contact).
+- If Instantly wasn't configured, you should have stopped at step 4 — hand back: "Cold sends through Instantly;
+  your config has no `instantly.campaign_id`. Run `/trellis-ae:setup` (Instantly step) and re-run this."
 
 ## Rules
-- **Deliver-for-review only — never send.** Instantly path = push into a **paused** campaign (never activate); Gmail path = an unsent draft. The AE reviews and sends. No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
+- **Deliver-for-review only — never send.** Cold delivery = push the approved sequence into the AE's **paused** Instantly campaign; you never activate it. The AE does the final review in Instantly and sends there. **No Gmail-draft fallback for cold** — if Instantly isn't configured, stop and route to setup. No fixed list cap — process the whole list in capped concurrency waves (≤4 at a time; see **Pace & walk-away**), no smaller-batch babysitting required. Respect RoE (step 2 is not optional).
 - **All prospect-facing copy is pre-written by `write-sequences` (via `ob-cold`, following `ob-messaging.md`) — never you.** You pull it and use it as-is. The only regeneration here is an approval-gate **rewrite** of a single touch, done via `ob-messaging` — you still may not write, shorten, paraphrase, or "polish" copy yourself. If a line didn't come from the stored `trellis_email_*` values or an `ob-messaging` rewrite, it doesn't go out.
 - Never fabricate emails, phones, metrics, or events. Case-study numbers are used verbatim from the index.
 - Don't narrate every tool call — do the work, then give the summary.
